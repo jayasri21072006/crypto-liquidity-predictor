@@ -1,50 +1,44 @@
 import streamlit as st
 import pandas as pd
-
-import os
 import joblib
+import os
 
-model_path = os.path.join(os.path.dirname(__file__), "crypto_liquidity_model.pkl")
-model = joblib.load(model_path)
+# Load trained model
+model = joblib.load(os.path.join("crypto_liquidity_model.pkl"))
 
+# Define expected features (same order used during training)
+expected_features = [
+    'price_usd', 'market_cap', 'volume_24h', 'btc_dominance',
+    'eth_dominance', 'active_addresses',
+    'feature_7', 'feature_8', 'feature_9', 'feature_10'  # placeholder names
+]
 
+# Streamlit UI
+st.title("Crypto Liquidity Predictor")
 
-# App title
-st.title("💸 Crypto Liquidity Predictor")
+# Input form
+price_usd = st.number_input("Price (USD)")
+market_cap = st.number_input("Market Cap")
+volume_24h = st.number_input("24h Volume")
+btc_dominance = st.number_input("BTC Dominance (%)")
+eth_dominance = st.number_input("ETH Dominance (%)")
+active_addresses = st.number_input("Active Addresses")
 
-# Description
-st.markdown("Predict **cryptocurrency liquidity** as 'Low', 'Medium', or 'High' based on real-time market inputs.")
-
-# Input fields for the user
-price = st.number_input("Current Price (USD)", value=1000.0)
-volume = st.number_input("24h Volume (USD)", value=1_000_000.0)
-mkt_cap = st.number_input("Market Cap (USD)", value=100_000_000.0)
-change_1h = st.number_input("Change in 1 Hour (%)", value=0.0)
-change_24h = st.number_input("Change in 24 Hours (%)", value=0.0)
-change_7d = st.number_input("Change in 7 Days (%)", value=0.0)
+# Optional: Add UI for feature_7 to feature_10 if values are known
+# For now, default to 0
+feature_7 = 0
+feature_8 = 0
+feature_9 = 0
+feature_10 = 0
 
 # Predict button
 if st.button("Predict Liquidity"):
-    # Prepare input
-    input_data = pd.DataFrame([[price, change_1h, change_24h, change_7d, volume, mkt_cap]],
-                              columns=['price', '1h', '24h', '7d', '24h_volume', 'mkt_cap'])
+    input_data = pd.DataFrame([[
+        price_usd, market_cap, volume_24h, btc_dominance, eth_dominance, active_addresses,
+        feature_7, feature_8, feature_9, feature_10
+    ]], columns=expected_features)
 
     prediction = model.predict(input_data)[0]
+    st.success(f"Predicted Liquidity: {prediction:.2f}")
 
-    # Classify into categories
-    if prediction < 0.4:
-        label = "Low"
-        color = "red"
-    elif prediction < 0.7:
-        label = "Medium"
-        color = "orange"
-    else:
-        label = "High"
-        color = "green"
-
-    # Show result
-    st.markdown(f"### 💧 Predicted Liquidity Level: <span style='color:{color}'><b>{label}</b></span>", unsafe_allow_html=True)
-    st.write(f"🔢 Raw Prediction Score: `{prediction:.3f}`")
-
-    st.success(f"Predicted Liquidity Level: **{prediction:.4f}**")
 
