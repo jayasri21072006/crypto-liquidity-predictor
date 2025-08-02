@@ -1,9 +1,13 @@
 import streamlit as st
 import pandas as pd
+
+import os
 import joblib
 
-# Load the trained model
-model = joblib.load('crypto_liquidity_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), "crypto_liquidity_model.pkl")
+model = joblib.load(model_path)
+
+
 
 # App title
 st.title("💸 Crypto Liquidity Predictor")
@@ -43,3 +47,4 @@ if st.button("Predict Liquidity"):
     st.write(f"🔢 Raw Prediction Score: `{prediction:.3f}`")
 
     st.success(f"Predicted Liquidity Level: **{prediction:.4f}**")
+
