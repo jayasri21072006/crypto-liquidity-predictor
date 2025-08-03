@@ -50,6 +50,15 @@ def classify_liquidity(value):
         return "🟨 Medium"
     else:
         return "🟩 High"
+    if low:
+      prediction = "📉 Price may go Down"
+    elif high:
+     prediction = "📈 Price may go Up"
+    else:
+     prediction = "❓ No Clear Prediction"
+
+
+
 
 # Prediction
 st.markdown("<br>", unsafe_allow_html=True)
@@ -67,6 +76,7 @@ if st.button("🔍 Predict Liquidity"):
         """, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"❌ Prediction failed: {e}")
+
 
 
 
