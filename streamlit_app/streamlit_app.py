@@ -1,92 +1,82 @@
 import streamlit as st
-import pickle
-import json
+import joblib
+import pandas as pd
 import os
 
-# ---------- CONFIG ----------
-st.set_page_config(page_title="Crypto Predictor 🔮", page_icon="💧", layout="centered")
+# 🧠 Load your trained ML model
+model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
+model = joblib.load(model_path)
 
-# ---------- UTILS ----------
-def load_model():
-    with open("model.pkl", "rb") as f:
-        return pickle.load(f)
+# 📄 Streamlit page setup
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-def save_users(users):
-    with open("users.json", "w") as f:
-        json.dump(users, f)
+# 🪙 Title & Subtitle
+st.markdown("""
+    <h1 style='text-align: center; color: #00BFFF;'>🪙 Crypto Liquidity Predictor</h1>
+    <p style='text-align: center;'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</p>
+    <hr>
+""", unsafe_allow_html=True)
 
-def load_users():
-    if os.path.exists("users.json"):
-        with open("users.json", "r") as f:
-            return json.load(f)
+# ✏️ Inputs: you enter crypto info
+col1, col2 = st.columns(2)
+with col1:
+    open_price = st.number_input('🔓 Open Price', value=0.0)
+    high_price = st.number_input('🔺 High Price', value=0.0)
+    low_price = st.number_input('🔻 Low Price', value=0.0)
+with col2:
+    close_price = st.number_input('🔒 Close Price', value=0.0)
+    volume = st.number_input('📦 Volume', value=0.0)
+    market_cap = st.number_input('💰 Market Cap', value=0.0, help="Market capitalization = Price × Circulating supply.")
+
+# 📦 Prepare data like a lunchbox for ML model
+input_data = pd.DataFrame({
+    'Open': [open_price],
+    'High': [high_price],
+    'Low': [low_price],
+    'Close': [close_price],
+    'Volume': [volume],
+    'Market Cap': [market_cap],
+    'SMA_5': [0],     # 🧮 You can later add real values here
+    'EMA_12': [0],
+    'RSI': [0],
+    'MACD': [0]
+})
+
+# 🍯 Liquidity Levels Explained
+def classify_liquidity(score):
+    if score < 0.4:
+        return "🟥 Low"
+    elif score < 0.7:
+        return "🟨 Medium"
     else:
-        return {}
+        return "🟩 High"
 
-# ---------- AUTH ----------
-def register_user(email, password):
-    users = load_users()
-    if email in users:
-        return False
-    users[email] = password
-    save_users(users)
-    return True
-
-def authenticate_user(email, password):
-    users = load_users()
-    return email in users and users[email] == password
-
-# ---------- PAGES ----------
-def show_login():
-    st.title("🔐 Login")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
-    if st.button("Login"):
-        if authenticate_user(email, password):
-            st.session_state.logged_in = True
-            st.session_state.email = email
-            st.success("Login successful!")
-        else:
-            st.error("Invalid email or password.")
-
-def show_register():
-    st.title("📝 Register")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
-    if st.button("Register"):
-        if register_user(email, password):
-            st.success("Registered! You can now log in.")
-        else:
-            st.error("Email already exists. Try logging in.")
-
-def show_prediction():
-    st.title("🔮 Crypto Liquidity Predictor")
-    model = load_model()
-
-    st.markdown("### 📊 Enter values for prediction:")
-    # Example input fields (customize as per your model)
-    feature1 = st.number_input("Feature 1")
-    feature2 = st.number_input("Feature 2")
-    feature3 = st.number_input("Feature 3")
-
-    if st.button("Predict"):
-        features = [[feature1, feature2, feature3]]
-        prediction = model.predict(features)
-        st.success(f"🚀 Predicted Value: {prediction[0]}")
-
-# ---------- MAIN ----------
-def main():
-    if "logged_in" not in st.session_state:
-        st.session_state.logged_in = False
-
-    if not st.session_state.logged_in:
-        choice = st.sidebar.radio("🔐 Auth Menu", ["Login", "Register"])
-        if choice == "Login":
-            show_login()
-        else:
-            show_register()
+# 🔮 Price movement hint
+def predict_price_trend(open_price, close_price):
+    if close_price > open_price:
+        return "📈 Price may go Up"
+    elif close_price < open_price:
+        return "📉 Price may go Down"
     else:
-        show_prediction()
+        return "❓ No Clear Price Movement"
 
-if __name__ == "__main__":
-    main()
+# 🔘 Predict button
+st.markdown("<br>", unsafe_allow_html=True)
+if st.button("🔍 Predict Liquidity"):
+    try:
+        # 🎯 Model prediction
+        score = model.predict(input_data)[0]
+        liquidity_level = classify_liquidity(score)
+        trend = predict_price_trend(open_price, close_price)
 
+        # 🎉 Show result after prediction
+        st.markdown(f"""
+        ### 📊 Prediction Result
+
+        - 💧 **Liquidity Score**: {score:.2f}  
+        - 🔵 **Liquidity Level**: {liquidity_level}  
+        - 📉 **Price Trend Hint**: {trend}  
+        """, unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"❌ Prediction failed: {e}")
