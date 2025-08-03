@@ -36,13 +36,13 @@ input_data = pd.DataFrame({
     'Close': [close_price],
     'Volume': [volume],
     'Market Cap': [market_cap],
-    'SMA_5': [0],     # 🧮 You can later add real values here
+    'SMA_5': [0],     # 📉 Calculated internally in model or not used
     'EMA_12': [0],
     'RSI': [0],
     'MACD': [0]
 })
 
-# 🍯 Liquidity Levels Explained
+# 📊 Liquidity classification
 def classify_liquidity(score):
     if score < 0.4:
         return "🟥 Low"
@@ -51,7 +51,7 @@ def classify_liquidity(score):
     else:
         return "🟩 High"
 
-# 🔮 Price movement hint
+# 📈 Price trend estimate
 def predict_price_trend(open_price, close_price):
     if close_price > open_price:
         return "📈 Price may go Up"
@@ -64,12 +64,11 @@ def predict_price_trend(open_price, close_price):
 st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🔍 Predict Liquidity"):
     try:
-        # 🎯 Model prediction
         score = model.predict(input_data)[0]
         liquidity_level = classify_liquidity(score)
         trend = predict_price_trend(open_price, close_price)
 
-        # 🎉 Show result after prediction
+        # ✅ Show result
         st.markdown(f"""
         ### 📊 Prediction Result
 
@@ -78,5 +77,15 @@ if st.button("🔍 Predict Liquidity"):
         - 📉 **Price Trend Hint**: {trend}  
         """, unsafe_allow_html=True)
 
+        # ⚠️ Disclaimer
+        st.markdown("""
+        ---
+        **🔒 Disclaimer:**  
+        This prediction is based on historical and statistical data using a basic machine learning model.  
+        It should NOT be used for financial decisions or investment advice.  
+        We are not responsible for any losses or decisions made based on this tool.
+        """, unsafe_allow_html=True)
+
     except Exception as e:
         st.error(f"❌ Prediction failed: {e}")
+
