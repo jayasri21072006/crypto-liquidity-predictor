@@ -68,17 +68,18 @@ if st.button("🔍 Predict Liquidity"):
         liquidity_level = classify_liquidity(score)
         trend = predict_price_trend(open_price, close_price)
 
-        st.markdown(f"""
-        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 10px; border-left: 5px solid #007acc;">
-            <h3 style="color: #007acc;">📊 Prediction Result</h3>
-            <p><strong>💧 Liquidity Score:</strong> {score:.2f}</p>
-            <p><strong>🔵 Liquidity Level:</strong> {liquidity_level}</p>
-            <p><strong>📉 Price Trend Hint:</strong> {trend}</p>
-        </div>
-        """, unsafe_allow_html=True)
+st.markdown(f"""
+### 📊 Prediction Result
+
+- 💧 **Liquidity Score**: {score:.2f}  
+- 🔵 **Liquidity Level**: {liquidity_level}  
+- 📉 **Price Trend Hint**: {trend}  
+""", unsafe_allow_html=True)
+
 
     except Exception as e:
         st.error(f"❌ Prediction failed: {e}")
+
 
 
 
