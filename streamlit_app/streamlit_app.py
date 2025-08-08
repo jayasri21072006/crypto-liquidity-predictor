@@ -26,7 +26,12 @@ with col1:
 with col2:
     close_price = st.number_input('🔒 Close Price', value=0.0)
     volume = st.number_input('📦 Volume', value=0.0)
-    market_cap = st.number_input('💰 Market Cap', value=0.0, help="Market capitalization = Price × Circulating supply.")
+
+# 🧮 Auto-calculate Market Cap (Close Price × Volume)
+market_cap = close_price * volume
+
+# Show market cap as readonly info
+st.markdown(f"💰 **Auto-Calculated Market Cap**: `{market_cap:,.2f}`")
 
 # 📦 Prepare data
 input_data = pd.DataFrame({
@@ -95,7 +100,6 @@ if st.button("🔍 Predict Liquidity"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
 
 
 
