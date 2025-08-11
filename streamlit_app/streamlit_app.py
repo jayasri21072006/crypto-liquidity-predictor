@@ -13,11 +13,11 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -53,15 +53,36 @@ st.markdown("""
         margin-top: 30px;
         font-size: 18px;
     }
-    .result-high { color: #00c853; font-weight: bold; }
-    .result-medium { color: #ffca28; font-weight: bold; }
-    .result-low { color: #d50000; font-weight: bold; }
-    .qa-answer {
-        background-color: pink;
-        color: black;
-        padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 15px;
+    .result-high {
+        color: #00c853;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-medium {
+        color: #ffca28;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-low {
+        color: #d50000;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-high:hover {
+        color: #00c853;
+        text-shadow: 0 0 15px #00c853;
+    }
+    .result-medium:hover {
+        color: #ffca28;
+        text-shadow: 0 0 10px #ffca28;
+    }
+    .result-low:hover {
+        color: #d50000;
+        text-shadow: 0 0 10px #d50000;
+    }
+    .button:hover {
+        background-color: #ff9800;
+        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.5);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -71,25 +92,28 @@ st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_a
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ✏️ User Inputs
-col1, col2 = st.columns(2)
-with col1:
-    open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
-    high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
-    low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
-with col2:
-    close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
-    volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
+# ✏️ User Inputs Section
+with st.container():
+    col1, col2 = st.columns(2)
+    with col1:
+        open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
+        high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
+        low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
+    with col2:
+        close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
+        volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
 
 # 💰 Auto-calculate Market Cap
 market_cap = close_price * volume
+
+# 🧾 Show calculated Market Cap
 st.markdown(f"""
 <div class="section">
     💰 <b>Auto-Calculated Market Cap:</b> <code>{market_cap:,.2f}</code>
 </div>
 """, unsafe_allow_html=True)
 
-# Prepare input for prediction
+# 🧠 Prepare input for prediction
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -120,7 +144,7 @@ def predict_price_trend(open_price, close_price):
     else:
         return "❓ No Clear Price Movement"
 
-# ⚠️ Disclaimer
+# ⚠️ Simplified Disclaimer
 st.markdown("""
 <div class="disclaimer">
     <strong>⚠️ Disclaimer:</strong><br>
@@ -133,13 +157,17 @@ st.markdown("""
 agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
 # 🚀 Predict Button
-if st.button("🔍 Predict Liquidity"):
+st.markdown("<br>", unsafe_allow_html=True)
+
+if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
+            # Try making a prediction
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
+            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
@@ -151,27 +179,8 @@ if st.button("🔍 Predict Liquidity"):
             </div>
             """, unsafe_allow_html=True)
 
-            # 📚 FAQ only after prediction
-            with st.expander("📚 Frequently Asked Questions (FAQ)"):
-                faq_data = [
-                    ("What is Bitcoin?", "Bitcoin is the first decentralized cryptocurrency, created in 2009 by Satoshi Nakamoto."),
-                    ("Is cryptocurrency safe?", "Blockchain technology is secure, but crypto prices are extremely volatile and risky."),
-                    ("How do I buy cryptocurrency?", "You can purchase crypto through trusted exchanges like Binance, Coinbase, or Kraken."),
-                    ("Can I make money with crypto?", "Yes, but it carries high risk. Prices can swing wildly, so invest wisely."),
-                    ("What is blockchain?", "A blockchain is a decentralized digital ledger that records transactions securely."),
-                    ("What is liquidity in crypto?", "Liquidity refers to how easily you can buy or sell a cryptocurrency without affecting its price."),
-                    ("What affects crypto liquidity?", "Trading volume, market activity, and the number of buyers/sellers influence liquidity."),
-                    ("Is crypto regulated?", "Regulations vary by country. Some countries have strict laws, while others are more open."),
-                    ("Can I lose all my money in crypto?", "Yes. Crypto markets are high-risk, and poor investment decisions can lead to losses."),
-                    ("What is DeFi?", "Decentralized Finance (DeFi) is blockchain-based finance without traditional banks.")
-                ]
-                for q, a in faq_data:
-                    st.markdown(f"**Q:** {q}")
-                    st.markdown(f"<div class='qa-answer'>{a}</div>", unsafe_allow_html=True)
-
         except Exception as e:
+            # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-SS
-
