@@ -13,7 +13,7 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient Background, Hover Effects & Larger Labels
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
@@ -30,7 +30,7 @@ st.markdown("""
     .subtitle {
         text-align: center;
         color: #333;
-        font-size: 22px;
+        font-size: 20px;
         margin-bottom: 20px;
     }
     .section {
@@ -40,16 +40,10 @@ st.markdown("""
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
         transition: 0.3s;
-        font-size: 20px; /* Bigger text inside sections */
     }
     .section:hover {
         transform: scale(1.02);
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
-    }
-    /* 🔹 Bigger font size for all labels */
-    label {
-        font-size: 20px !important;
-        font-weight: bold;
     }
     .disclaimer {
         background-color: #fff4e6;
@@ -58,7 +52,6 @@ st.markdown("""
         border-radius: 10px;
         margin-top: 30px;
         font-size: 18px;
-        color: #ff9800; /* Orange disclaimer text */
     }
     .result-high {
         color: #00c853;
@@ -76,12 +69,15 @@ st.markdown("""
         transition: 0.3s;
     }
     .result-high:hover {
+        color: #00c853;
         text-shadow: 0 0 15px #00c853;
     }
     .result-medium:hover {
+        color: #ffca28;
         text-shadow: 0 0 10px #ffca28;
     }
     .result-low:hover {
+        color: #d50000;
         text-shadow: 0 0 10px #d50000;
     }
     .button:hover {
@@ -184,7 +180,7 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             """, unsafe_allow_html=True)
 
         except Exception as e:
+            # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
- 
