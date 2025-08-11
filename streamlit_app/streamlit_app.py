@@ -14,35 +14,52 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 st.markdown("""
     <style>
     body {
-        background-color: #f2f9ff;
+        background-color: #f0f7ff;
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
         text-align: center;
-        color: #00BFFF;
-        font-size: 48px;
+        color: #0077ff;
+        font-size: 50px;
         font-weight: bold;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     .subtitle {
         text-align: center;
         color: #333;
-        font-size: 18px;
+        font-size: 20px;
         margin-bottom: 10px;
     }
     .section {
         background-color: #ffffff;
-        border-radius: 12px;
+        border-radius: 15px;
         padding: 20px;
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
+        transition: 0.3s;
+    }
+    .section:hover {
+        transform: scale(1.01);
+        box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
-        background-color: #fff3cd;
-        border-left: 6px solid #ffeeba;
+        background-color: #fff4e6;
+        border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
+    }
+    .result-high {
+        color: #00c853;
+        font-weight: bold;
+    }
+    .result-medium {
+        color: #ffca28;
+        font-weight: bold;
+    }
+    .result-low {
+        color: #d50000;
+        font-weight: bold;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -90,11 +107,11 @@ input_data = pd.DataFrame({
 # 🔍 Classification logic
 def classify_liquidity(score):
     if score < 0.4:
-        return "🟥 Low"
+        return "<span class='result-low'>🟥 Low</span>"
     elif score < 0.7:
-        return "🟨 Medium"
+        return "<span class='result-medium'>🟨 Medium</span>"
     else:
-        return "🟩 High"
+        return "<span class='result-high'>🟩 High</span>"
 
 def predict_price_trend(open_price, close_price):
     if close_price > open_price:
@@ -117,12 +134,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-agree = st.checkbox("I acknowledge and accept the disclaimer above.")
+agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
 # 🚀 Predict Button
 st.markdown("<br>", unsafe_allow_html=True)
 
-if st.button("🔍 Predict Liquidity"):
+if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
             score = model.predict(input_data)[0]
@@ -145,8 +162,3 @@ if st.button("🔍 Predict Liquidity"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
-
-
-
-
