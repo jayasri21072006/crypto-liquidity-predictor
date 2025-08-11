@@ -14,7 +14,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #1f5f5f, #3aa59d, #6ed0c7); /* Peacock-inspired gradient */
+        background: linear-gradient(135deg, #1f5f5f, #00bfae, #6ed0c7); /* Peacock-inspired gradient */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -179,4 +179,5 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
 
