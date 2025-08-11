@@ -7,72 +7,68 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS for better visibility in dark mode
+# Custom CSS
 st.markdown("""
     <style>
         /* Background */
         body, .stApp {
-            background-color: #1e1e1e !important;
+            background-color: #2e2e2e !important;
             color: white !important;
         }
 
         /* Big Neon Title */
         .big-title {
-            font-size: 60px;
+            font-size: 55px;
             text-align: center;
             color: #ff66ff;
             font-weight: bold;
             text-shadow: 0px 0px 25px #ff66ff;
         }
 
-        /* Subtitle */
+        /* Subtitle text */
         .subtitle {
             text-align: center;
-            font-size: 22px;
-            color: #eeeeee;
+            font-size: 20px;
+            color: #dddddd;
             margin-bottom: 30px;
         }
 
-        /* Bigger input labels */
-        label {
-            font-size: 24px !important;
+        /* Field labels (light blue) */
+        .stNumberInput label, .stTextInput label, .stSelectbox label {
+            font-size: 22px !important;
             font-weight: bold !important;
-            color: #ffffff !important;
+            color: #4dc3ff !important; 
         }
 
-        /* Input fields */
+        /* Input box styling */
         .stNumberInput input {
             font-size: 20px !important;
-            background-color: #333333 !important;
+            background-color: #2a2a2a !important;
             color: white !important;
-            border: 2px solid #666666 !important;
-            border-radius: 8px !important;
+            border: 2px solid #4dc3ff !important;
+            border-radius: 6px !important;
+        }
+
+        /* All text below labels (market cap, disclaimer, checkbox) in red */
+        .market-cap, .stAlert p, .stCheckbox label, .prediction-box {
+            color: #ff4d4d !important;
+            font-weight: bold !important;
         }
 
         /* Market Cap Box */
         .market-cap {
-            background-color: #2b2b2b;
+            background-color: #1a1a1a;
             padding: 12px;
             border-radius: 10px;
-            font-size: 20px;
-            color: white;
-        }
-
-        /* Warning box style */
-        .stAlert {
-            background-color: #4a3f00 !important;
-            color: #ffcc00 !important;
             font-size: 18px;
-            border-radius: 8px;
         }
 
         /* Prediction Result Box */
         .prediction-box {
-            background-color: #2b2b2b;
+            background-color: #1a1a1a;
             padding: 15px;
             border-radius: 12px;
-            font-size: 20px;
-            color: white;
+            font-size: 18px;
             margin-top: 20px;
         }
     </style>
@@ -96,11 +92,7 @@ with col2:
 
 # Auto-calculated market cap
 market_cap = close_price * volume
-st.markdown(
-    f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> '
-    f'<span style="color: lightgreen;">{market_cap:,.2f}</span></div>',
-    unsafe_allow_html=True
-)
+st.markdown(f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> {market_cap:,.2f}</div>', unsafe_allow_html=True)
 
 # Disclaimer
 st.warning("""
@@ -124,6 +116,4 @@ if st.button("🔮 Predict Liquidity"):
         """, unsafe_allow_html=True)
     else:
         st.error("Please accept the disclaimer before predicting.")
-
-
 
