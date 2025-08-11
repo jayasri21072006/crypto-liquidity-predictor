@@ -17,12 +17,19 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling
+# 💅 Custom CSS Styling - ChatGPT Gradient
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
+        background: linear-gradient(135deg, #fde2e4, #fad0c4, #fbc2eb, #a6c1ee);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
         font-family: 'Segoe UI', sans-serif;
+    }
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
     }
     .title {
         text-align: center;
@@ -39,7 +46,7 @@ st.markdown("""
         font-weight: bold;
     }
     .section {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.85);
         border-radius: 15px;
         padding: 20px;
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
@@ -47,7 +54,6 @@ st.markdown("""
         transition: 0.3s;
         font-size: 20px;
     }
-    /* Liquidity level boxes */
     .result-box-high {
         background-color: #e6ffed;
         border-left: 8px solid #00c853;
@@ -65,7 +71,6 @@ st.markdown("""
         font-weight: bold !important;
         color: #222;
     }
-    /* Main inputs bright blue & larger */
     label[for="🔓 Open Price"],
     label[for="🔺 High Price"],
     label[for="🔻 Low Price"],
@@ -121,7 +126,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# 🔍 Classification Logic with color class
+# 🔍 Classification Logic
 def classify_liquidity(score):
     try:
         score = float(score)
