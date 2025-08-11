@@ -3,17 +3,17 @@ import joblib
 import pandas as pd
 import os
 
-# 🎯 Load ML Model with Error Handling
+# 🎯 Load ML Model
 try:
     model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
     model = joblib.load(model_path)
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
-# 🌈 Streamlit Page Setup
+# 🌈 Page Config
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling (Mild pastel gradient + big fonts)
+# 💅 CSS Styling (Pink background)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
@@ -22,9 +22,9 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Soft pastel gradient background */
+    /* Pink gradient background */
     body {
-        background: linear-gradient(135deg, #d4fc79, #96e6a1);
+        background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
         background-attachment: fixed;
         background-size: cover;
     }
@@ -36,15 +36,15 @@ st.markdown("""
         border-radius: 15px;
     }
 
-    /* Title style */
+    /* Title */
     .title {
         text-align: center;
         font-size: 70px;
         font-weight: 900;
-        background: linear-gradient(90deg, #ff6f61, #ff9800, #ffca28);
+        background: linear-gradient(90deg, #ff758c, #ff7eb3);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
         margin-top: 20px;
     }
 
@@ -72,18 +72,9 @@ st.markdown("""
     }
 
     /* Liquidity result colors */
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-    }
+    .result-high { color: #00c853; font-weight: bold; }
+    .result-medium { color: #ffca28; font-weight: bold; }
+    .result-low { color: #d50000; font-weight: bold; }
 
     /* Disclaimer box */
     .disclaimer {
@@ -102,28 +93,21 @@ st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_a
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ✏️ User Inputs Section
-with st.container():
-    col1, col2 = st.columns(2)
-    with col1:
-        open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
-        high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
-        low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
-    with col2:
-        close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
-        volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
+# ✏️ Inputs
+col1, col2 = st.columns(2)
+with col1:
+    open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
+    high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
+    low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
+with col2:
+    close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
+    volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
 
 # 💰 Auto-calculate Market Cap
 market_cap = close_price * volume
+st.markdown(f"<div class='section'>💰 <b>Auto-Calculated Market Cap:</b> <code>{market_cap:,.2f}</code></div>", unsafe_allow_html=True)
 
-# 🧾 Show calculated Market Cap
-st.markdown(f"""
-<div class="section">
-    💰 <b>Auto-Calculated Market Cap:</b> <code>{market_cap:,.2f}</code>
-</div>
-""", unsafe_allow_html=True)
-
-# 🧠 Prepare input for prediction
+# 🧠 Prediction Input
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -163,13 +147,11 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ✅ Disclaimer Acknowledgment
+# ✅ Accept Disclaimer
 accept = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
-# 🚀 Predict Button (No duplicates)
-predict_clicked = st.button("🔍 Predict Liquidity", help="Click to generate prediction")
-
-if predict_clicked:
+# 🚀 Prediction Button
+if st.button("🔍 Predict Liquidity"):
     if accept:
         try:
             score = model.predict(input_data)[0]
@@ -191,5 +173,4 @@ if predict_clicked:
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
 
