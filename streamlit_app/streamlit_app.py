@@ -13,11 +13,11 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -53,23 +53,53 @@ st.markdown("""
         margin-top: 30px;
         font-size: 18px;
     }
-    .result-high { color: #00c853; font-weight: bold; }
-    .result-medium { color: #ffca28; font-weight: bold; }
-    .result-low { color: #d50000; font-weight: bold; }
-    /* Tabs Styling */
-    .stTabs [data-baseweb="tab-list"] {
-        background-color: #ffe4ec;
-        border-radius: 10px;
-        padding: 5px;
+    .result-high {
+        color: #00c853;
+        font-weight: bold;
+        transition: 0.3s;
     }
-    .stTabs [data-baseweb="tab"] {
-        color: #444;
+    .result-medium {
+        color: #ffca28;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-low {
+        color: #d50000;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-high:hover {
+        color: #00c853;
+        text-shadow: 0 0 15px #00c853;
+    }
+    .result-medium:hover {
+        color: #ffca28;
+        text-shadow: 0 0 10px #ffca28;
+    }
+    .result-low:hover {
+        color: #d50000;
+        text-shadow: 0 0 10px #d50000;
+    }
+    .button:hover {
+        background-color: #ff9800;
+        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.5);
+    }
+    /* Q&A Styling */
+    .qa-question {
+        background-color: black;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
         font-weight: bold;
     }
-    .stTabs [aria-selected="true"] {
-        background-color: #fff8f0;
+    .qa-answer {
+        background-color: pink;
+        color: black;
+        padding: 10px;
         border-radius: 8px;
-        color: #ff4081;
+        margin-bottom: 15px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -78,6 +108,21 @@ st.markdown("""
 st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
+
+# 📖 About Cryptocurrency
+st.subheader("📘 What is Cryptocurrency?")
+st.markdown("""
+Cryptocurrency is a type of **digital money** that uses **cryptography** for security.  
+It works on a **blockchain** — a decentralized ledger of transactions.  
+No bank or government controls it.
+
+**Popular Examples:**
+- Bitcoin (BTC)
+- Ethereum (ETH)
+- Binance Coin (BNB)
+- Solana (SOL)
+- Ripple (XRP)
+""")
 
 # ✏️ User Inputs Section
 with st.container():
@@ -136,13 +181,16 @@ st.markdown("""
 <div class="disclaimer">
     <strong>⚠️ Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
-    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b>.
+    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b> incurred from using this app.
 </div>
 """, unsafe_allow_html=True)
 
+# ✅ Disclaimer Acknowledgment
 agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
 # 🚀 Predict Button
+st.markdown("<br>", unsafe_allow_html=True)
+
 if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
@@ -150,7 +198,6 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
-            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
@@ -162,38 +209,22 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             </div>
             """, unsafe_allow_html=True)
 
-            # 📚 Tabs with extra info
-            tab1, tab2 = st.tabs(["💡 What is Crypto?", "❓ Q&A"])
-
-            with tab1:
-                st.markdown("""
-                ### 🪙 What is Cryptocurrency?
-                Cryptocurrency is a digital or virtual form of money that uses cryptography for security.  
-                It operates on decentralized blockchain technology.
-
-                **Popular Coins:**
-                - **Bitcoin (BTC)** – The first and largest cryptocurrency.
-                - **Ethereum (ETH)** – Known for smart contracts.
-                - **Binance Coin (BNB)** – Used on Binance exchange.
-                - **Cardano (ADA)** – Energy-efficient blockchain platform.
-                """)
-
-            with tab2:
-                st.markdown("""
-                ### ❓ Frequently Asked Questions
-
-                **Q1: Is this prediction 100% accurate?**  
-                📝 No. The prediction is based on historical data patterns and may not always be correct.
-
-                **Q2: Should I invest based on this tool?**  
-                📝 Always do your own research and consult financial advisors before investing.
-
-                **Q3: How is liquidity important?**  
-                📝 Liquidity determines how easily an asset can be bought or sold without affecting its price.
-                """)
-
         except Exception as e:
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
+# 📚 Interactive Q&A
+st.subheader("💬 Crypto Q&A")
+qa_data = [
+    ("What is Bitcoin?", "Bitcoin is the first decentralized cryptocurrency, created in 2009 by Satoshi Nakamoto."),
+    ("Is crypto safe?", "Blockchain is secure, but crypto prices are very volatile."),
+    ("How do I buy crypto?", "Use trusted exchanges like Binance, Coinbase, or Kraken."),
+    ("Can I make money with crypto?", "Yes, but it carries high risk. Prices can swing wildly."),
+    ("What is blockchain?", "A blockchain is a decentralized digital ledger that records transactions securely.")
+]
+
+for question, answer in qa_data:
+    with st.expander(f"💬 {question}"):
+        st.markdown(f"<div class='qa-answer'>{answer}</div>", unsafe_allow_html=True)
 
