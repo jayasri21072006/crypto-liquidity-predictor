@@ -13,77 +13,21 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient Background and Hover Effects
+# 💅 Custom CSS Styling
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
         font-family: 'Segoe UI', sans-serif;
     }
-    .title {
-        text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    .subtitle {
-        text-align: center;
-        color: #333;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    .section {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-        transition: 0.3s;
-    }
-    .section:hover {
-        transform: scale(1.02);
-        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
-    }
-    .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 30px;
-        font-size: 18px;
-    }
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .result-high:hover {
-        color: #00c853;
-        text-shadow: 0 0 15px #00c853;
-    }
-    .result-medium:hover {
-        color: #ffca28;
-        text-shadow: 0 0 10px #ffca28;
-    }
-    .result-low:hover {
-        color: #d50000;
-        text-shadow: 0 0 10px #d50000;
-    }
-    .button:hover {
-        background-color: #ff9800;
-        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.5);
-    }
+    .title { text-align: center; color: #0044cc; font-size: 50px; font-weight: bold; margin-top: 15px; }
+    .subtitle { text-align: center; color: #333; font-size: 20px; margin-bottom: 20px; }
+    .section { background-color: #ffffff; border-radius: 15px; padding: 20px;
+               box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); margin-top: 20px; }
+    .disclaimer { background-color: #fff4e6; border-left: 6px solid #ff9800; padding: 15px; border-radius: 10px; }
+    .result-high { color: #00c853; font-weight: bold; }
+    .result-medium { color: #ffca28; font-weight: bold; }
+    .result-low { color: #d50000; font-weight: bold; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -92,7 +36,7 @@ st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_a
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ✏️ User Inputs Section
+# ✏️ User Inputs
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
@@ -105,83 +49,84 @@ with st.container():
 
 # 💰 Auto-calculate Market Cap
 market_cap = close_price * volume
+st.markdown(f"<div class='section'>💰 <b>Market Cap:</b> {market_cap:,.2f}</div>", unsafe_allow_html=True)
 
-# 🧾 Show calculated Market Cap
-st.markdown(f"""
-<div class="section">
-    💰 <b>Auto-Calculated Market Cap:</b> <code>{market_cap:,.2f}</code>
-</div>
-""", unsafe_allow_html=True)
+# 🧠 Match training feature order
+try:
+    if hasattr(model, "feature_names_in_"):
+        feature_order = list(model.feature_names_in_)
+    else:
+        # Fallback: define manually based on training
+        feature_order = ['Open', 'High', 'Low', 'Close', 'Volume',
+                         'Market Cap', 'SMA_5', 'EMA_12', 'RSI', 'MACD']
 
-# 🧠 Prepare input for prediction
-input_data = pd.DataFrame({
-    'Open': [open_price],
-    'High': [high_price],
-    'Low': [low_price],
-    'Close': [close_price],
-    'Volume': [volume],
-    'Market Cap': [market_cap],
-    'SMA_5': [0],
-    'EMA_12': [0],
-    'RSI': [0],
-    'MACD': [0]
-})
+    # Fill missing features with 0
+    input_dict = {
+        'Open': open_price,
+        'High': high_price,
+        'Low': low_price,
+        'Close': close_price,
+        'Volume': volume,
+        'Market Cap': market_cap,
+        'SMA_5': 0,
+        'EMA_12': 0,
+        'RSI': 0,
+        'MACD': 0
+    }
+
+    input_data = pd.DataFrame([[input_dict[feat] for feat in feature_order]], columns=feature_order)
+
+except Exception as e:
+    st.error(f"Feature alignment error: {e}")
+    st.stop()
 
 # 🔍 Classification logic
 def classify_liquidity(score):
-    if score < 0.4:
-        return "<span class='result-low'>🟥 Low</span>"
-    elif score < 0.7:
-        return "<span class='result-medium'>🟨 Medium</span>"
-    else:
-        return "<span class='result-high'>🟩 High</span>"
+    if score < 0.4: return "<span class='result-low'>🟥 Low</span>"
+    elif score < 0.7: return "<span class='result-medium'>🟨 Medium</span>"
+    else: return "<span class='result-high'>🟩 High</span>"
 
-def predict_price_trend(open_price, close_price):
-    if close_price > open_price:
-        return "📈 Price may go Up"
-    elif close_price < open_price:
-        return "📉 Price may go Down"
-    else:
-        return "❓ No Clear Price Movement"
+def predict_price_trend(open_p, close_p):
+    if close_p > open_p: return "📈 Price may go Up"
+    elif close_p < open_p: return "📉 Price may go Down"
+    else: return "❓ No Clear Movement"
 
-# ⚠️ Simplified Disclaimer
+# ⚠️ Disclaimer
 st.markdown("""
 <div class="disclaimer">
-    <strong>⚠️ Disclaimer:</strong><br>
-    This tool uses an AI/ML model to make predictions based on input data.<br>
-    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b> incurred from using this app.
+    <b>⚠️ Disclaimer:</b> This tool uses an AI/ML model and is not financial advice.
 </div>
 """, unsafe_allow_html=True)
+agree = st.checkbox("✅ I understand and accept")
 
-# ✅ Disclaimer Acknowledgment
-agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
-
-# 🚀 Predict Button
-st.markdown("<br>", unsafe_allow_html=True)
-
-if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
+# 🚀 Predict
+if st.button("🔍 Predict Liquidity"):
     if agree:
         try:
-            # Try making a prediction
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
-            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
-                <ul>
-                    <li>💧 <b>Liquidity Score</b>: {score:.2f}</li>
-                    <li>🔵 <b>Liquidity Level</b>: {liquidity_level}</li>
-                    <li>📉 <b>Price Trend Hint</b>: {trend}</li>
-                </ul>
+                💧 <b>Score:</b> {score:.2f} <br>
+                🔵 <b>Level:</b> {liquidity_level} <br>
+                📉 <b>Trend:</b> {trend}
             </div>
             """, unsafe_allow_html=True)
 
+            # 📝 Question & Solution section
+            with st.expander("💡 Common Questions & Answers"):
+                st.write("**Q: How is liquidity calculated?**")
+                st.write("**A:** The model uses price, volume, and indicators like SMA, EMA, RSI, and MACD.")
+                st.write("**Q: Can this predict future prices?**")
+                st.write("**A:** No, it estimates liquidity conditions, not exact prices.")
+                st.write("**Q: Is this financial advice?**")
+                st.write("**A:** No, please do your own research.")
+
         except Exception as e:
-            # Handle any exceptions during prediction
-            st.error(f"❌ Prediction failed: {e}")
+            st.error(f"Prediction failed: {e}")
     else:
-        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+        st.warning("Please accept the disclaimer first.")
 
