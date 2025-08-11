@@ -47,12 +47,25 @@ st.markdown("""
         transition: 0.3s;
         font-size: 20px;
     }
+    /* Liquidity level boxes */
+    .result-box-high {
+        background-color: #e6ffed;
+        border-left: 8px solid #00c853;
+    }
+    .result-box-medium {
+        background-color: #fffde7;
+        border-left: 8px solid #ffca28;
+    }
+    .result-box-low {
+        background-color: #ffebee;
+        border-left: 8px solid #d50000;
+    }
     label {
         font-size: 20px !important;
         font-weight: bold !important;
         color: #222;
     }
-    /* Make main input labels bright blue and bigger */
+    /* Main inputs bright blue & larger */
     label[for="🔓 Open Price"],
     label[for="🔺 High Price"],
     label[for="🔻 Low Price"],
@@ -108,18 +121,18 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# 🔍 Classification Logic
+# 🔍 Classification Logic with color class
 def classify_liquidity(score):
     try:
         score = float(score)
     except ValueError:
-        return f"<span style='color:red;'>Invalid score: {score}</span>"
+        return "result-box-low", f"<span style='color:red;'>Invalid score: {score}</span>"
     if score < 0.4:
-        return "<span style='color:red; font-weight:bold;'>🟥 Low</span>"
+        return "result-box-low", "<span style='color:red; font-weight:bold;'>🟥 Low</span>"
     elif score < 0.7:
-        return "<span style='color:orange; font-weight:bold;'>🟨 Medium</span>"
+        return "result-box-medium", "<span style='color:orange; font-weight:bold;'>🟨 Medium</span>"
     else:
-        return "<span style='color:green; font-weight:bold;'>🟩 High</span>"
+        return "result-box-high", "<span style='color:green; font-weight:bold;'>🟩 High</span>"
 
 def predict_price_trend(open_price, close_price):
     if close_price > open_price:
@@ -143,9 +156,6 @@ agree = st.checkbox("✅ I understand the disclaimer", key="agree_checkbox")
 
 # 🚀 Predict
 if st.button("🔍 Predict Liquidity"):
-    st.write("✅ Button clicked")  # Debug
-    st.write("Agreement status:", agree)  # Debug
-
     if not agree:
         st.warning("⚠ Please accept the disclaimer to use this feature.")
     elif model is None:
@@ -153,18 +163,11 @@ if st.button("🔍 Predict Liquidity"):
     else:
         try:
             raw_output = model.predict(input_data)[0]
-            st.write("Model raw output:", raw_output)  # Debug
-
-            try:
-                score = float(raw_output)
-                liquidity_level = classify_liquidity(score)
-            except ValueError:
-                liquidity_level = f"<b>{raw_output}</b>"
-
+            box_class, liquidity_level = classify_liquidity(raw_output)
             trend = predict_price_trend(open_price, close_price)
 
             st.markdown(f"""
-            <div class='section'>
+            <div class='section {box_class}'>
                 <h3>📊 Prediction Result</h3>
                 <ul>
                     <li>💧 <b>Liquidity Score</b>: {raw_output}</li>
