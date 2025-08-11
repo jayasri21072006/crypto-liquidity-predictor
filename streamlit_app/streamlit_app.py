@@ -13,10 +13,11 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling (Keep Background)
+# 💅 Custom CSS Styling
 st.markdown("""
     <style>
     body {
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -55,6 +56,21 @@ st.markdown("""
     .result-high { color: #00c853; font-weight: bold; }
     .result-medium { color: #ffca28; font-weight: bold; }
     .result-low { color: #d50000; font-weight: bold; }
+    /* Tabs Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #ffe4ec;
+        border-radius: 10px;
+        padding: 5px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #444;
+        font-weight: bold;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #fff8f0;
+        border-radius: 8px;
+        color: #ff4081;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -62,35 +78,6 @@ st.markdown("""
 st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
-
-# 📘 What is Cryptocurrency Section
-with st.expander("📚 What is Cryptocurrency?"):
-    st.markdown("""
-    Cryptocurrency is a **digital currency** that uses **cryptography** for security.
-    It operates on a **decentralized network** (like blockchain), meaning no central authority (like a bank) controls it.
-
-    **Popular Cryptocurrencies:**
-    - 🪙 Bitcoin (BTC) – The first and most well-known cryptocurrency.
-    - 💎 Ethereum (ETH) – Known for smart contracts and decentralized apps.
-    - 🚀 Binance Coin (BNB) – Used for transactions on Binance exchange.
-    - 🦄 Cardano (ADA) – Eco-friendly blockchain platform.
-    """)
-
-# ❓ Crypto Q&A Section
-with st.expander("💡 Frequently Asked Questions"):
-    st.markdown("""
-    **Q1: Is cryptocurrency safe?**  
-    ✅ If stored properly in secure wallets, it can be safe, but prices are volatile.
-
-    **Q2: Can I get rich from crypto?**  
-    ⚠️ Possible, but risky. Always do research before investing.
-
-    **Q3: What is liquidity in crypto?**  
-    💧 Liquidity means how quickly an asset can be bought or sold without affecting its price.
-
-    **Q4: Which crypto has the highest liquidity?**  
-    🔝 Bitcoin (BTC) and Ethereum (ETH) are usually the most liquid.
-    """)
 
 # ✏️ User Inputs Section
 with st.container():
@@ -149,11 +136,10 @@ st.markdown("""
 <div class="disclaimer">
     <strong>⚠️ Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
-    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b> incurred from using this app.
+    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b>.
 </div>
 """, unsafe_allow_html=True)
 
-# ✅ Disclaimer Acknowledgment
 agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
 # 🚀 Predict Button
@@ -164,6 +150,7 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
+            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
@@ -175,7 +162,38 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             </div>
             """, unsafe_allow_html=True)
 
+            # 📚 Tabs with extra info
+            tab1, tab2 = st.tabs(["💡 What is Crypto?", "❓ Q&A"])
+
+            with tab1:
+                st.markdown("""
+                ### 🪙 What is Cryptocurrency?
+                Cryptocurrency is a digital or virtual form of money that uses cryptography for security.  
+                It operates on decentralized blockchain technology.
+
+                **Popular Coins:**
+                - **Bitcoin (BTC)** – The first and largest cryptocurrency.
+                - **Ethereum (ETH)** – Known for smart contracts.
+                - **Binance Coin (BNB)** – Used on Binance exchange.
+                - **Cardano (ADA)** – Energy-efficient blockchain platform.
+                """)
+
+            with tab2:
+                st.markdown("""
+                ### ❓ Frequently Asked Questions
+
+                **Q1: Is this prediction 100% accurate?**  
+                📝 No. The prediction is based on historical data patterns and may not always be correct.
+
+                **Q2: Should I invest based on this tool?**  
+                📝 Always do your own research and consult financial advisors before investing.
+
+                **Q3: How is liquidity important?**  
+                📝 Liquidity determines how easily an asset can be bought or sold without affecting its price.
+                """)
+
         except Exception as e:
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
