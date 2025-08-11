@@ -1,102 +1,85 @@
 import streamlit as st
 import joblib
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
 
-# 🎯 Load ML Model with Error Handling
-try:
-    model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
-    model = joblib.load(model_path)
-except Exception as e:
-    st.error(f"Error loading the model: {e}")
+# 🎯 Load ML Model
+model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
+model = joblib.load(model_path)
 
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling
+# 💅 Custom CSS
 st.markdown("""
     <style>
-    body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .title { text-align: center; color: #0044cc; font-size: 50px; font-weight: bold; margin-top: 15px; }
-    .subtitle { text-align: center; color: #333; font-size: 20px; margin-bottom: 20px; }
-    .section { background-color: #ffffff; border-radius: 15px; padding: 20px; box-shadow: 0px 6px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-    .disclaimer { background-color: #fff4e6; border-left: 6px solid #ff9800; padding: 15px; border-radius: 10px; margin-top: 30px; font-size: 18px; }
-    .result-high { color: #00c853; font-weight: bold; }
-    .result-medium { color: #ffca28; font-weight: bold; }
-    .result-low { color: #d50000; font-weight: bold; }
+        body {
+            background-color: #f0f2f6;
+        }
+        .title {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2e86de;
+        }
+        .section {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .stButton>button {
+            background-color: #2e86de;
+            color: white;
+            border-radius: 8px;
+            height: 3em;
+            width: 100%;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# 🪙 Title & Subtitle
-st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+# 🏷 Title
+st.markdown("<div class='title'>💧 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 
-# ✏️ User Inputs
-with st.container():
-    col1, col2 = st.columns(2)
-    with col1:
-        open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
-        high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
-        low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
-    with col2:
-        close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
-        volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
+# 📌 Input Fields
+with st.form("input_form"):
+    open_price = st.number_input("📈 Open Price", min_value=0.0, format="%.2f")
+    high_price = st.number_input("📊 High Price", min_value=0.0, format="%.2f")
+    low_price = st.number_input("📉 Low Price", min_value=0.0, format="%.2f")
+    close_price = st.number_input("💵 Close Price", min_value=0.0, format="%.2f")
+    volume = st.number_input("📦 Volume", min_value=0.0, format="%.2f")
+    market_cap = st.number_input("🏦 Market Cap", min_value=0.0, format="%.2f")
 
-# 💰 Auto-calculate Market Cap
-market_cap = close_price * volume
-st.markdown(f"<div class='section'>💰 <b>Auto-Calculated Market Cap:</b> <code>{market_cap:,.2f}</code></div>", unsafe_allow_html=True)
+    agree = st.checkbox("✅ I agree this prediction is for educational purposes only")
+    submitted = st.form_submit_button("🔍 Predict Liquidity")
 
-# 🧠 Prepare Data for Prediction
-input_data = pd.DataFrame({
-    'Open': [open_price],
-    'High': [high_price],
-    'Low': [low_price],
-    'Close': [close_price],
-    'Volume': [volume],
-    'Market Cap': [market_cap],
-    'SMA_5': [0],
-    'EMA_12': [0],
-    'RSI': [0],
-    'MACD': [0]
-})
-
-# 🔍 Classification Logic
+# 🔄 Prediction Functions
 def classify_liquidity(score):
     if score < 0.4:
-        return "<span class='result-low'>🟥 Low</span>"
+        return "Low"
     elif score < 0.7:
-        return "<span class='result-medium'>🟨 Medium</span>"
+        return "Medium"
     else:
-        return "<span class='result-high'>🟩 High</span>"
+        return "High"
 
-def predict_price_trend(open_price, close_price):
-    if close_price > open_price:
-        return "📈 Price may go Up"
-    elif close_price < open_price:
-        return "📉 Price may go Down"
+def predict_price_trend(open_p, close_p):
+    if close_p > open_p:
+        return "Uptrend"
+    elif close_p < open_p:
+        return "Downtrend"
     else:
-        return "❓ No Clear Price Movement"
+        return "No Change"
 
-# ⚠️ Disclaimer
-st.markdown("""
-<div class="disclaimer">
-    <strong>⚠️ Disclaimer:</strong><br>
-    This tool uses an AI/ML model to make predictions based on input data.<br>
-    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b> incurred from using this app.
-</div>
-""", unsafe_allow_html=True)
-
-agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
-
-# 🚀 Predict Button
-if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
+# 🚀 Predict Logic
+if submitted:
     if agree:
         try:
+            # Prepare input
+            input_data = pd.DataFrame([[open_price, high_price, low_price, close_price, volume, market_cap]],
+                                      columns=["open", "high", "low", "close", "volume", "market_cap"])
+
+            # Predict
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
@@ -113,7 +96,7 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             </div>
             """, unsafe_allow_html=True)
 
-            # 📈 Plot Price Trend for Non-Experts
+            # 📈 Price Trend Chart
             price_history = [open_price, high_price, low_price, close_price]
             fig, ax = plt.subplots()
             ax.plot(price_history, marker='o', linestyle='-', color='blue')
@@ -131,9 +114,20 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
 
             st.pyplot(fig)
 
+            # 📊 Liquidity Gauge Chart (Horizontal Bar)
+            fig2, ax2 = plt.subplots(figsize=(5, 1.2))
+            ax2.barh(["Liquidity"], [score], color=(
+                "red" if score < 0.4 else "orange" if score < 0.7 else "green"
+            ))
+            ax2.set_xlim(0, 1)
+            ax2.set_xlabel("Liquidity Score")
+            ax2.set_title("💧 Liquidity Level")
+            ax2.grid(axis='x', alpha=0.3)
+            st.pyplot(fig2)
+
         except Exception as e:
             st.error(f"❌ Prediction failed: {e}")
     else:
-        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+        st.warning("Please accept the disclaimer before making predictions.")
 
 
