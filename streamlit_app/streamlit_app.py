@@ -10,11 +10,11 @@ model = joblib.load(model_path)
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling
+# 💅 Custom CSS Styling with Gradient, Hover, and Glow Effects
 st.markdown("""
     <style>
     body {
-        background-color: #f0f7ff;
+        background: linear-gradient(135deg, #f0f7ff, #d3e9ff);
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -28,7 +28,7 @@ st.markdown("""
         text-align: center;
         color: #333;
         font-size: 20px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
     .section {
         background-color: #ffffff;
@@ -39,8 +39,8 @@ st.markdown("""
         transition: 0.3s;
     }
     .section:hover {
-        transform: scale(1.01);
-        box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
+        transform: scale(1.02);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
         background-color: #fff4e6;
@@ -53,14 +53,33 @@ st.markdown("""
     .result-high {
         color: #00c853;
         font-weight: bold;
+        transition: 0.3s;
     }
     .result-medium {
         color: #ffca28;
         font-weight: bold;
+        transition: 0.3s;
     }
     .result-low {
         color: #d50000;
         font-weight: bold;
+        transition: 0.3s;
+    }
+    .result-high:hover {
+        color: #00c853;
+        text-shadow: 0 0 15px #00c853;
+    }
+    .result-medium:hover {
+        color: #ffca28;
+        text-shadow: 0 0 10px #ffca28;
+    }
+    .result-low:hover {
+        color: #d50000;
+        text-shadow: 0 0 10px #d50000;
+    }
+    .button:hover {
+        background-color: #ff9800;
+        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.5);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -69,6 +88,13 @@ st.markdown("""
 st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
+
+# 🖼️ Hero Image
+st.markdown("""
+    <div style="text-align:center; margin-top: 20px;">
+        <img src="https://your-image-link.com/crypto-hero.jpg" width="80%" alt="Crypto Hero Image">
+    </div>
+""", unsafe_allow_html=True)
 
 # ✏️ User Inputs Section
 with st.container():
@@ -160,3 +186,4 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
