@@ -17,7 +17,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba);
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -30,7 +30,7 @@ st.markdown("""
     .subtitle {
         text-align: center;
         color: #333;
-        font-size: 20px;
+        font-size: 22px;
         margin-bottom: 20px;
     }
     .section {
@@ -40,6 +40,7 @@ st.markdown("""
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
         transition: 0.3s;
+        font-size: 18px; /* Increase text inside sections */
     }
     .section:hover {
         transform: scale(1.02);
@@ -52,6 +53,13 @@ st.markdown("""
         border-radius: 10px;
         margin-top: 30px;
         font-size: 18px;
+        color: #ff9800;
+        font-weight: bold;
+    }
+    label {
+        font-size: 20px !important; /* Increase label font size */
+        font-weight: bold !important;
+        color: #222;
     }
     .result-high {
         color: #00c853;
@@ -162,7 +170,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
-            # Try making a prediction
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
@@ -180,7 +187,6 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             """, unsafe_allow_html=True)
 
         except Exception as e:
-            # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
