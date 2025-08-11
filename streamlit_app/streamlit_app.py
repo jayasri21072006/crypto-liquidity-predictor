@@ -24,16 +24,16 @@ st.markdown("""
         /* Subtitle */
         .subtitle {
             text-align: center;
-            font-size: 32px !important;
+            font-size: 38px !important;
             font-weight: bold !important;
             color: #00bfff !important;
             text-shadow: 0px 0px 8px #00bfff;
             margin-bottom: 30px;
         }
 
-        /* Field labels */
+        /* Field labels (all bigger now) */
         .stNumberInput label, .stTextInput label, .stSelectbox label {
-            font-size: 32px !important;  
+            font-size: 38px !important;  
             font-weight: bold !important;
             color: #00bfff !important; 
             text-shadow: 0px 0px 8px #00bfff;
@@ -41,7 +41,7 @@ st.markdown("""
 
         /* Input styling */
         .stNumberInput input {
-            font-size: 20px !important;
+            font-size: 22px !important;
             background-color: #2a2a2a !important;
             color: white !important;
             border: 2px solid #00bfff !important;
@@ -53,7 +53,7 @@ st.markdown("""
             background-color: #1a1a1a;
             padding: 12px;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff66ff !important;
         }
@@ -63,15 +63,15 @@ st.markdown("""
             background-color: #1a1a1a;
             padding: 12px;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             color: #4dc3ff !important;
         }
 
-        /* Checkbox label in orange */
+        /* Checkbox label in orange - bigger */
         div.stCheckbox label {
             color: orange !important;
-            font-size: 20px !important;
+            font-size: 38px !important;
             font-weight: bold !important;
             text-shadow: 0px 0px 6px orange;
             opacity: 1 !important;
@@ -88,7 +88,7 @@ st.markdown("""
             background-color: #1a1a1a;
             padding: 15px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 20px;
             margin-top: 20px;
             color: #ff66ff !important;
         }
@@ -97,7 +97,7 @@ st.markdown("""
         div.stButton > button {
             background-color: #1a1a1a !important;
             color: #ff66ff !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
             font-weight: bold;
             border: 2px solid #ff66ff !important;
             border-radius: 8px;
@@ -135,7 +135,7 @@ st.markdown('<div class="disclaimer-box">⚠ Disclaimer: This tool uses an AI/ML
 # BELOW DISCLAIMER CONTENT
 st.markdown('<div class="below-disclaimer">', unsafe_allow_html=True)
 
-# Checkbox in orange
+# Checkbox in orange - bigger
 agree = st.checkbox("✅ I understand the disclaimer")
 if agree:
     if st.button("🔮 Predict Liquidity Level"):
