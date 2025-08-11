@@ -1,3 +1,4 @@
+
 import streamlit as st
 import joblib
 import pandas as pd
@@ -10,32 +11,31 @@ try:
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
-# 🌙 Streamlit Page Setup with Dark Theme
+# 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Dark Theme and Hover Effects
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: #333333; /* Dark background */
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
         font-family: 'Segoe UI', sans-serif;
-        color: #ffffff; /* Light text color */
     }
     .title {
         text-align: center;
-        color: #ffffff; /* White color for title */
+        color: #0044cc;
         font-size: 50px;
         font-weight: bold;
         margin-top: 15px;
     }
     .subtitle {
         text-align: center;
-        color: #f0f0f0; /* Slightly off-white for subtitle */
+        color: #333;
         font-size: 20px;
         margin-bottom: 20px;
     }
     .section {
-        background-color: #444444; /* Dark gray background for sections */
+        background-color: #ffffff;
         border-radius: 15px;
         padding: 20px;
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
@@ -47,7 +47,7 @@ st.markdown("""
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
-        background-color: #555555; /* Darker background for disclaimer */
+        background-color: #fff4e6;
         border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
@@ -184,6 +184,4 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
-        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
-                
+        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")              
