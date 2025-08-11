@@ -13,7 +13,7 @@ except Exception as e:
 # 🌈 Page Config
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 CSS Styling (Pink background)
+# 💅 Dark Theme CSS
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
@@ -22,16 +22,17 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Pink gradient background */
+    /* Dark gradient background */
     body {
-        background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
         background-attachment: fixed;
         background-size: cover;
+        color: #ffffff;
     }
 
-    /* Main content card */
+    /* Main content container */
     .main {
-        background-color: rgba(255, 255, 255, 0.92);
+        background-color: rgba(20, 20, 20, 0.85);
         padding: 25px;
         border-radius: 15px;
     }
@@ -41,10 +42,10 @@ st.markdown("""
         text-align: center;
         font-size: 70px;
         font-weight: 900;
-        background: linear-gradient(90deg, #ff758c, #ff7eb3);
+        background: linear-gradient(90deg, #ff6ec4, #7873f5);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        text-shadow: 0px 0px 15px rgba(255, 110, 196, 0.7);
         margin-top: 20px;
     }
 
@@ -52,38 +53,51 @@ st.markdown("""
     .subtitle {
         text-align: center;
         font-size: 22px;
-        color: #333;
+        color: #ddd;
         margin-bottom: 20px;
         font-weight: 500;
     }
 
     /* Section cards */
     .section {
-        background-color: #ffffff;
+        background-color: rgba(40, 40, 40, 0.95);
         border-radius: 15px;
         padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.5);
         margin-top: 20px;
         transition: 0.3s;
+        color: #eee;
     }
     .section:hover {
         transform: scale(1.02);
-        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 10px 20px rgba(255, 110, 196, 0.3);
     }
 
     /* Liquidity result colors */
-    .result-high { color: #00c853; font-weight: bold; }
-    .result-medium { color: #ffca28; font-weight: bold; }
-    .result-low { color: #d50000; font-weight: bold; }
+    .result-high { color: #4caf50; font-weight: bold; }
+    .result-medium { color: #ffc107; font-weight: bold; }
+    .result-low { color: #f44336; font-weight: bold; }
 
     /* Disclaimer box */
     .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
+        background-color: rgba(255, 193, 7, 0.1);
+        border-left: 6px solid #ffc107;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
         font-size: 14px;
+        color: #ffeb3b;
+    }
+
+    /* Input labels */
+    label {
+        color: #fff !important;
+    }
+
+    /* Number inputs */
+    input {
+        background-color: #1e1e1e !important;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -173,4 +187,5 @@ if st.button("🔍 Predict Liquidity"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
 
