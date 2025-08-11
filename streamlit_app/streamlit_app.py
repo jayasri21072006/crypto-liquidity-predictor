@@ -10,16 +10,16 @@ model = joblib.load(model_path)
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient, Hover, and Glow Effects
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #f0f7ff, #d3e9ff);
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
         text-align: center;
-        color: #0077ff;
+        color: #0044cc;
         font-size: 50px;
         font-weight: bold;
         margin-top: 15px;
@@ -88,13 +88,6 @@ st.markdown("""
 st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter key crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
-
-# 🖼️ Hero Image
-st.markdown("""
-    <div style="text-align:center; margin-top: 20px;">
-        <img src="https://your-image-link.com/crypto-hero.jpg" width="80%" alt="Crypto Hero Image">
-    </div>
-""", unsafe_allow_html=True)
 
 # ✏️ User Inputs Section
 with st.container():
@@ -186,4 +179,5 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
 
