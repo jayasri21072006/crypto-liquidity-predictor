@@ -31,7 +31,7 @@ st.markdown("""
             margin-bottom: 30px;
         }
 
-        /* Field labels (all bigger now) */
+        /* Field labels */
         .stNumberInput label, .stTextInput label, .stSelectbox label {
             font-size: 38px !important;  
             font-weight: bold !important;
@@ -41,7 +41,7 @@ st.markdown("""
 
         /* Input styling */
         .stNumberInput input {
-            font-size: 22px !important;
+            font-size: 24px !important;
             background-color: #2a2a2a !important;
             color: white !important;
             border: 2px solid #00bfff !important;
@@ -63,18 +63,9 @@ st.markdown("""
             background-color: #1a1a1a;
             padding: 12px;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #4dc3ff !important;
-        }
-
-        /* Checkbox label in orange - bigger */
-        div.stCheckbox label {
-            color: orange !important;
-            font-size: 38px !important;
-            font-weight: bold !important;
-            text-shadow: 0px 0px 6px orange;
-            opacity: 1 !important;
         }
 
         /* EVERYTHING below disclaimer in pink */
@@ -83,7 +74,7 @@ st.markdown("""
             font-weight: bold;
         }
 
-        /* Prediction Result (pink now) */
+        /* Prediction Result (pink) */
         .prediction-box {
             background-color: #1a1a1a;
             padding: 15px;
@@ -105,6 +96,15 @@ st.markdown("""
         div.stButton > button:hover {
             background-color: #ff66ff !important;
             color: black !important;
+        }
+
+        /* Checkbox label in large orange without blur */
+        div[data-testid="stCheckbox"] label {
+            color: orange !important;
+            font-size: 38px !important;
+            font-weight: bold !important;
+            text-shadow: 0px 0px 6px orange;
+            opacity: 1 !important; /* remove Streamlit fade */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -135,7 +135,6 @@ st.markdown('<div class="disclaimer-box">⚠ Disclaimer: This tool uses an AI/ML
 # BELOW DISCLAIMER CONTENT
 st.markdown('<div class="below-disclaimer">', unsafe_allow_html=True)
 
-# Checkbox in orange - bigger
 agree = st.checkbox("✅ I understand the disclaimer")
 if agree:
     if st.button("🔮 Predict Liquidity Level"):
@@ -150,4 +149,5 @@ if agree:
         st.markdown(f'<div class="prediction-box">📊 Prediction: {prediction}</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
