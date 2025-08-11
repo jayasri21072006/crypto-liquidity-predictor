@@ -10,31 +10,32 @@ try:
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
-# 🌈 Streamlit Page Setup
+# 🌙 Streamlit Page Setup with Dark Theme
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient Background and Hover Effects
+# 💅 Custom CSS Styling with Dark Theme and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
+        background: #333333; /* Dark background */
         font-family: 'Segoe UI', sans-serif;
+        color: #ffffff; /* Light text color */
     }
     .title {
         text-align: center;
-        color: #0044cc;
+        color: #ffffff; /* White color for title */
         font-size: 50px;
         font-weight: bold;
         margin-top: 15px;
     }
     .subtitle {
         text-align: center;
-        color: #333;
+        color: #f0f0f0; /* Slightly off-white for subtitle */
         font-size: 20px;
         margin-bottom: 20px;
     }
     .section {
-        background-color: #ffffff;
+        background-color: #444444; /* Dark gray background for sections */
         border-radius: 15px;
         padding: 20px;
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
@@ -46,7 +47,7 @@ st.markdown("""
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
-        background-color: #fff4e6;
+        background-color: #555555; /* Darker background for disclaimer */
         border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
@@ -184,4 +185,5 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
                 
