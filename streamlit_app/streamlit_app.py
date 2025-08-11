@@ -48,6 +48,7 @@ st.markdown("""
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
+        font-size: 14px;
     }
     .result-high {
         color: #00c853;
@@ -121,19 +122,16 @@ def predict_price_trend(open_price, close_price):
     else:
         return "❓ No Clear Price Movement"
 
-# ⚠️ Disclaimer section
+# ⚠️ Simplified Disclaimer
 st.markdown("""
 <div class="disclaimer">
-    <strong>⚠️ Disclaimer:</strong> <br>
-    This application is built for <b>educational and experimental purposes only</b>. <br>
-    Predictions are based on historical indicators via a machine learning model. <br>
-    These are <b>not financial advice</b> and we <b>do not guarantee</b> accuracy. <br>
-    We <b>do not provide suggestions</b> for any specific coin, token, or investment. <br>
-    <br>
-    <i>By using this app, you acknowledge and accept these terms.</i>
+    <strong>⚠️ Disclaimer:</strong><br>
+    This tool uses an AI/ML model to make predictions based on input data.<br>
+    <b>We do not guarantee accuracy</b>, and <b>we are not responsible for any financial losses</b> incurred from using this app.
 </div>
 """, unsafe_allow_html=True)
 
+# ✅ Disclaimer Acknowledgment
 agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
 # 🚀 Predict Button
