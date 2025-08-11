@@ -7,53 +7,72 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS to enlarge and brighten labels & headers
+# Custom CSS for better visibility in dark mode
 st.markdown("""
     <style>
         /* Background */
         body, .stApp {
-            background-color: #2e2e2e !important;
+            background-color: #1e1e1e !important;
             color: white !important;
         }
 
         /* Big Neon Title */
         .big-title {
-            font-size: 55px;
+            font-size: 60px;
             text-align: center;
             color: #ff66ff;
             font-weight: bold;
             text-shadow: 0px 0px 25px #ff66ff;
         }
 
-        /* Subtitle text */
+        /* Subtitle */
         .subtitle {
             text-align: center;
-            font-size: 20px;
-            color: #dddddd;
+            font-size: 22px;
+            color: #eeeeee;
             margin-bottom: 30px;
         }
 
-        /* Bigger & bolder labels */
+        /* Bigger input labels */
         label {
-            font-size: 22px !important;
-            font-weight: 700 !important;
+            font-size: 24px !important;
+            font-weight: bold !important;
             color: #ffffff !important;
+        }
+
+        /* Input fields */
+        .stNumberInput input {
+            font-size: 20px !important;
+            background-color: #333333 !important;
+            color: white !important;
+            border: 2px solid #666666 !important;
+            border-radius: 8px !important;
         }
 
         /* Market Cap Box */
         .market-cap {
-            background-color: #1a1a1a;
+            background-color: #2b2b2b;
             padding: 12px;
             border-radius: 10px;
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Warning box style */
+        .stAlert {
+            background-color: #4a3f00 !important;
+            color: #ffcc00 !important;
             font-size: 18px;
+            border-radius: 8px;
         }
 
         /* Prediction Result Box */
         .prediction-box {
-            background-color: #1a1a1a;
+            background-color: #2b2b2b;
             padding: 15px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 20px;
+            color: white;
             margin-top: 20px;
         }
     </style>
@@ -77,7 +96,11 @@ with col2:
 
 # Auto-calculated market cap
 market_cap = close_price * volume
-st.markdown(f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> <span style="color: lightgreen;">{market_cap:,.2f}</span></div>', unsafe_allow_html=True)
+st.markdown(
+    f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> '
+    f'<span style="color: lightgreen;">{market_cap:,.2f}</span></div>',
+    unsafe_allow_html=True
+)
 
 # Disclaimer
 st.warning("""
