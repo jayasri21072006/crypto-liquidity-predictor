@@ -14,7 +14,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #007f80, #00bfae, #3a8b8e); /* Peacock-inspired gradient */
+        background: linear-gradient(135deg, #1f5f5f, #3aa59d, #6ed0c7); /* Peacock-inspired gradient */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
@@ -44,7 +44,7 @@ st.markdown("""
     }
     .disclaimer {
         background-color: #f1f8f8;
-        border-left: 6px solid #00bfae; /* A lighter peacock green */
+        border-left: 6px solid #6ed0c7; /* A peacock-like green color */
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
@@ -179,3 +179,4 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
+
