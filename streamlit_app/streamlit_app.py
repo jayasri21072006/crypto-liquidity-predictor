@@ -13,7 +13,7 @@ except Exception as e:
 # 🌈 Page Config
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Dark Theme CSS
+# 💅 CSS Styling with bigger fonts + currency background
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
@@ -22,17 +22,30 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Dark gradient background */
+    /* Mild gradient background */
     body {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
         background-attachment: fixed;
         background-size: cover;
-        color: #ffffff;
+        color: #000;
     }
 
-    /* Main content container */
+    /* Currency watermark (optional) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Dollar_sign.svg/800px-Dollar_sign.svg.png') center/15% repeat;
+        opacity: 0.05;
+        z-index: -1;
+    }
+
+    /* Main container */
     .main {
-        background-color: rgba(20, 20, 20, 0.85);
+        background-color: rgba(255, 255, 255, 0.85);
         padding: 25px;
         border-radius: 15px;
     }
@@ -40,7 +53,7 @@ st.markdown("""
     /* Title */
     .title {
         text-align: center;
-        font-size: 70px;
+        font-size: 72px;
         font-weight: 900;
         background: linear-gradient(90deg, #ff6ec4, #7873f5);
         -webkit-background-clip: text;
@@ -52,52 +65,57 @@ st.markdown("""
     /* Subtitle */
     .subtitle {
         text-align: center;
-        font-size: 22px;
-        color: #ddd;
+        font-size: 28px;
+        color: #333;
         margin-bottom: 20px;
         font-weight: 500;
     }
 
     /* Section cards */
     .section {
-        background-color: rgba(40, 40, 40, 0.95);
+        background-color: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
         padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.5);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
         margin-top: 20px;
         transition: 0.3s;
-        color: #eee;
+        color: #000;
     }
     .section:hover {
         transform: scale(1.02);
         box-shadow: 0px 10px 20px rgba(255, 110, 196, 0.3);
     }
 
-    /* Liquidity result colors */
-    .result-high { color: #4caf50; font-weight: bold; }
-    .result-medium { color: #ffc107; font-weight: bold; }
-    .result-low { color: #f44336; font-weight: bold; }
+    /* Bigger input labels */
+    label {
+        color: #000 !important;
+        font-size: 20px !important;
+        font-weight: 600 !important;
+    }
 
-    /* Disclaimer box */
+    /* Number inputs */
+    input {
+        background-color: #ffffff !important;
+        color: #000 !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+        padding: 8px !important;
+    }
+
+    /* Liquidity result colors */
+    .result-high { color: #4caf50; font-weight: bold; font-size: 20px; }
+    .result-medium { color: #ffc107; font-weight: bold; font-size: 20px; }
+    .result-low { color: #f44336; font-weight: bold; font-size: 20px; }
+
+    /* Disclaimer */
     .disclaimer {
         background-color: rgba(255, 193, 7, 0.1);
         border-left: 6px solid #ffc107;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
-        font-size: 14px;
-        color: #ffeb3b;
-    }
-
-    /* Input labels */
-    label {
-        color: #fff !important;
-    }
-
-    /* Number inputs */
-    input {
-        background-color: #1e1e1e !important;
-        color: white !important;
+        font-size: 16px;
+        color: #000;
     }
     </style>
 """, unsafe_allow_html=True)
