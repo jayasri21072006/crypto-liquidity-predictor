@@ -1,13 +1,9 @@
 import streamlit as st
 
-# Page config
-st.set_page_config(
-    page_title="Crypto Liquidity Predictor",
-    page_icon="💹",
-    layout="wide"
-)
+# ---------- PAGE CONFIG ----------
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💹", layout="wide")
 
-# Custom CSS
+# ---------- CUSTOM CSS ----------
 st.markdown("""
     <style>
         /* Background */
@@ -25,20 +21,22 @@ st.markdown("""
             text-shadow: 0px 0px 25px #ff66ff;
         }
 
-        /* Subtitle */
+        /* Subtitle (same style & size as labels) */
         .subtitle {
             text-align: center;
-            font-size: 20px;
-            color: #dddddd;
+            font-size: 32px !important;
+            font-weight: bold !important;
+            color: #00bfff !important;
+            text-shadow: 0px 0px 8px #00bfff;
             margin-bottom: 30px;
         }
 
-        /* Field labels (bigger, bold, neon blue) */
+        /* Field labels */
         .stNumberInput label, .stTextInput label, .stSelectbox label {
             font-size: 32px !important;  
             font-weight: bold !important;
             color: #00bfff !important; 
-            text-shadow: 0px 0px 8px #00bfff;  /* Neon glow */
+            text-shadow: 0px 0px 8px #00bfff;
         }
 
         /* Input styling */
@@ -82,47 +80,41 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Title
+# ---------- TITLE ----------
 st.markdown('<div class="big-title">💹 Crypto Liquidity Predictor</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Enter key crypto data to estimate <b>Liquidity Level</b>.</div>', unsafe_allow_html=True)
 
-# Input fields
+# ---------- INPUTS ----------
 col1, col2 = st.columns(2)
 
 with col1:
-    open_price = st.number_input("🔓 Open Price", min_value=0.0, format="%.4f")
-    high_price = st.number_input("⚠ High Price", min_value=0.0, format="%.4f")
-    low_price = st.number_input("🔻 Low Price", min_value=0.0, format="%.4f")
+    open_price = st.number_input("🔓 Open Price", value=0.0000, format="%.4f")
+    high_price = st.number_input("⚠ High Price", value=0.0000, format="%.4f")
+    low_price = st.number_input("🔻 Low Price", value=0.0000, format="%.4f")
 
 with col2:
-    close_price = st.number_input("🔒 Close Price", min_value=0.0, format="%.4f")
-    volume = st.number_input("📦 Volume", min_value=0.0, format="%.4f")
+    close_price = st.number_input("🔒 Close Price", value=0.0000, format="%.4f")
+    volume = st.number_input("📦 Volume", value=0.0000, format="%.4f")
 
-# Auto-calculated market cap
+# Auto Calculate Market Cap
 market_cap = close_price * volume
-st.markdown(f'<div class="market-cap">💰 Auto-Calculated Market Cap: {market_cap:,.2f}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="market-cap">💰 Auto-Calculated Market Cap: {market_cap:.2f}</div>', unsafe_allow_html=True)
 
 # Disclaimer
-st.markdown("""
-<div class="disclaimer-box">
-⚠ Disclaimer:  
-This tool uses an AI/ML model to make predictions based on input data.  
-We do not guarantee accuracy, and we are not responsible for any financial losses incurred from using this app.
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="disclaimer-box">⚠ Disclaimer: This tool uses an AI/ML model to make predictions based on input data. We do not guarantee accuracy, and we are not responsible for any financial losses incurred from using this app.</div>', unsafe_allow_html=True)
 
-# Prediction button
-accept = st.checkbox("✅ I understand the disclaimer")
+# Checkbox to confirm disclaimer
+agree = st.checkbox("✅ I understand the disclaimer")
 
-if st.button("🔮 Predict Liquidity"):
-    if accept:
-        st.markdown("""
-            <div class="prediction-box">
-            📊 **Prediction Result**  
-            💧 Liquidity Score: 0.07  
-            🚨 Liquidity Level: **Low**  
-            📈 Price Trend Hint: No Clear Price Movement
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.error("Please accept the disclaimer before predicting.")
+# Prediction Button
+if agree:
+    if st.button("🔮 Predict Liquidity Level"):
+        # Simple placeholder prediction logic
+        if market_cap > 1000000:
+            prediction = "High Liquidity"
+        elif market_cap > 500000:
+            prediction = "Medium Liquidity"
+        else:
+            prediction = "Low Liquidity"
+
+        st.markdown(f'<div class="prediction-box">📊 Prediction: {prediction}</div>', unsafe_allow_html=True)
