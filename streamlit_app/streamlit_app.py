@@ -33,11 +33,12 @@ st.markdown("""
             margin-bottom: 30px;
         }
 
-        /* Field labels (light blue, bigger font) */
+        /* Field labels (bigger, bold, neon blue) */
         .stNumberInput label, .stTextInput label, .stSelectbox label {
-            font-size: 26px !important;  /* Increased font size */
+            font-size: 32px !important;  
             font-weight: bold !important;
-            color: #4dc3ff !important; 
+            color: #00bfff !important; 
+            text-shadow: 0px 0px 8px #00bfff;  /* Neon glow */
         }
 
         /* Input styling */
@@ -45,7 +46,7 @@ st.markdown("""
             font-size: 20px !important;
             background-color: #2a2a2a !important;
             color: white !important;
-            border: 2px solid #4dc3ff !important;
+            border: 2px solid #00bfff !important;
             border-radius: 6px !important;
         }
 
@@ -97,30 +98,29 @@ with col2:
     close_price = st.number_input("🔒 Close Price", min_value=0.0, format="%.4f")
     volume = st.number_input("📦 Volume", min_value=0.0, format="%.4f")
 
-# Auto-calculated market cap (PINK)
+# Auto-calculated market cap
 market_cap = close_price * volume
-st.markdown(f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> {market_cap:,.2f}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="market-cap">💰 Auto-Calculated Market Cap: {market_cap:,.2f}</div>', unsafe_allow_html=True)
 
-# Disclaimer (BLUE)
+# Disclaimer
 st.markdown("""
 <div class="disclaimer-box">
-⚠ <b>Disclaimer:</b><br>
-This tool uses an AI/ML model to make predictions based on input data.<br>
+⚠ Disclaimer:  
+This tool uses an AI/ML model to make predictions based on input data.  
 We do not guarantee accuracy, and we are not responsible for any financial losses incurred from using this app.
 </div>
 """, unsafe_allow_html=True)
 
-# Checkbox
+# Prediction button
 accept = st.checkbox("✅ I understand the disclaimer")
 
-# Predict Button
 if st.button("🔮 Predict Liquidity"):
     if accept:
         st.markdown("""
             <div class="prediction-box">
-            📊 <b>Prediction Result</b><br>
-            💧 Liquidity Score: 0.07<br>
-            🚨 Liquidity Level: <b>Low</b><br>
+            📊 **Prediction Result**  
+            💧 Liquidity Score: 0.07  
+            🚨 Liquidity Level: **Low**  
             📈 Price Trend Hint: No Clear Price Movement
             </div>
         """, unsafe_allow_html=True)
