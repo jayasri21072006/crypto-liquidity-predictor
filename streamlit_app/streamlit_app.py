@@ -10,23 +10,23 @@ model = joblib.load(model_path)
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient Background and Hover Effects
+# 💅 Custom CSS Styling with Peacock-Inspired Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
+        background: linear-gradient(135deg, #007f80, #00bfae, #3a8b8e); /* Peacock-inspired gradient */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
         text-align: center;
-        color: #0044cc;
+        color: #ffffff; /* White color for title to contrast with background */
         font-size: 50px;
         font-weight: bold;
         margin-top: 15px;
     }
     .subtitle {
         text-align: center;
-        color: #333;
+        color: #f0f0f0; /* Subtle off-white color */
         font-size: 20px;
         margin-bottom: 20px;
     }
@@ -43,8 +43,8 @@ st.markdown("""
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
+        background-color: #f1f8f8;
+        border-left: 6px solid #00bfae; /* A lighter peacock green */
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
@@ -179,5 +179,3 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
-
