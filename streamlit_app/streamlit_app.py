@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 # 🎯 Load ML Model with Error Handling
 try:
@@ -178,6 +179,19 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
                 </ul>
             </div>
             """, unsafe_allow_html=True)
+
+            # 📈 Show Price Trend Chart
+            fig, ax = plt.subplots(figsize=(6, 4))
+            prices = [open_price, high_price, low_price, close_price]
+            labels = ["Open", "High", "Low", "Close"]
+
+            ax.plot(labels, prices, marker='o', linewidth=2, color='#ff6f61')
+            ax.fill_between(labels, prices, color='#ffb3ba', alpha=0.3)
+            ax.set_title("Price Trend", fontsize=16, fontweight='bold', color="#ff6f61")
+            ax.set_ylabel("Price", fontsize=12, color="black")
+            ax.grid(True, linestyle='--', alpha=0.5)
+
+            st.pyplot(fig)
 
         except Exception as e:
             # Handle any exceptions during prediction
