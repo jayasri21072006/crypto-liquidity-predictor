@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 # 🎯 Load ML Model with Error Handling
 model = None
@@ -181,6 +182,17 @@ if st.button("🔍 Predict Liquidity"):
                 </ul>
             </div>
             """, unsafe_allow_html=True)
+
+            # 📈 Add Graph
+            fig, ax = plt.subplots(figsize=(6, 1.2))
+            ax.barh(0, raw_output, color='green' if raw_output >= 0.7 else ('orange' if raw_output >= 0.4 else 'red'))
+            ax.set_xlim(0, 1)
+            ax.set_yticks([])
+            ax.set_xlabel("Liquidity Score")
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+            ax.set_facecolor("none")
+            st.pyplot(fig)
 
         except Exception as e:
             st.error(f"❌ Prediction failed: {e}")
