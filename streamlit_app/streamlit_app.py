@@ -1,4 +1,3 @@
-
 import streamlit as st
 import joblib
 import pandas as pd
@@ -14,76 +13,102 @@ except Exception as e:
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Gradient Background and Hover Effects
+# 💅 Custom CSS for Attractive UI
 st.markdown("""
     <style>
-    body {
-        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
-        font-family: 'Segoe UI', sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+    html, body, [class*="css"] {
+        font-family: 'Poppins', sans-serif;
     }
+
+    /* Animated Gradient Background */
+    body {
+        background: linear-gradient(-45deg, #f9f0ff, #fce4ec, #e3f2fd, #fff3e0);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+    }
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+
+    /* Title */
     .title {
         text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 15px;
+        font-size: 65px;
+        font-weight: 900;
+        background: linear-gradient(90deg, #ff6f61, #ff9800, #ffca28);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        margin-top: 20px;
     }
+
+    /* Subtitle */
     .subtitle {
         text-align: center;
-        color: #333;
-        font-size: 20px;
+        font-size: 26px;
+        color: #4a148c;
         margin-bottom: 20px;
     }
+
+    /* Section Card */
     .section {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.9);
         border-radius: 15px;
         padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
         margin-top: 20px;
-        transition: 0.3s;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-size: 20px;
     }
     .section:hover {
         transform: scale(1.02);
-        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 12px 24px rgba(0,0,0,0.2);
     }
+
+    /* Input fields */
+    .stNumberInput label {
+        font-size: 20px !important;
+        font-weight: bold !important;
+        color: #d84315 !important;
+    }
+    .stNumberInput input {
+        font-size: 18px !important;
+        height: 45px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Disclaimer */
     .disclaimer {
-        background-color: #fff4e6;
+        background-color: #fff3e0;
         border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
+        font-size: 16px;
         margin-top: 30px;
-        font-size: 14px;
     }
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
+
+    /* Result colors */
+    .result-high {color: #00c853; font-weight: bold;}
+    .result-medium {color: #ffca28; font-weight: bold;}
+    .result-low {color: #d50000; font-weight: bold;}
+
+    /* Predict Button */
+    div.stButton > button:first-child {
+        font-size: 20px;
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        background: linear-gradient(90deg, #ff6f61, #ff9800);
+        color: white;
+        border: none;
         transition: 0.3s;
     }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .result-high:hover {
-        color: #00c853;
-        text-shadow: 0 0 15px #00c853;
-    }
-    .result-medium:hover {
-        color: #ffca28;
-        text-shadow: 0 0 10px #ffca28;
-    }
-    .result-low:hover {
-        color: #d50000;
-        text-shadow: 0 0 10px #d50000;
-    }
-    .button:hover {
-        background-color: #ff9800;
-        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.5);
+    div.stButton > button:first-child:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(255, 152, 0, 0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -145,7 +170,7 @@ def predict_price_trend(open_price, close_price):
     else:
         return "❓ No Clear Price Movement"
 
-# ⚠️ Simplified Disclaimer
+# ⚠️ Disclaimer
 st.markdown("""
 <div class="disclaimer">
     <strong>⚠️ Disclaimer:</strong><br>
@@ -163,12 +188,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
-            # Try making a prediction
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
-            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
@@ -181,7 +204,6 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             """, unsafe_allow_html=True)
 
         except Exception as e:
-            # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
-        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")              
+        st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
