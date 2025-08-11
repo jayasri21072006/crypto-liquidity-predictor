@@ -34,7 +34,7 @@ st.markdown("""
     .subtitle {
         text-align: center;
         color: #333;
-        font-size: 26px; /* Bigger like labels */
+        font-size: 26px;
         margin-bottom: 20px;
         font-weight: bold;
     }
@@ -48,9 +48,19 @@ st.markdown("""
         font-size: 20px;
     }
     label {
-        font-size: 22px !important;
+        font-size: 20px !important;
         font-weight: bold !important;
         color: #222;
+    }
+    /* Make main input labels bright blue and bigger */
+    label[for="🔓 Open Price"],
+    label[for="🔺 High Price"],
+    label[for="🔻 Low Price"],
+    label[for="🔒 Close Price"],
+    label[for="📦 Volume"] {
+        color: #0044cc !important;
+        font-size: 24px !important;
+        font-weight: bold !important;
     }
     .disclaimer {
         background-color: #fff4e6;
@@ -133,7 +143,7 @@ agree = st.checkbox("✅ I understand the disclaimer", key="agree_checkbox")
 
 # 🚀 Predict
 if st.button("🔍 Predict Liquidity"):
-    st.write("✅ Button clicked")  # Debug message
+    st.write("✅ Button clicked")  # Debug
     st.write("Agreement status:", agree)  # Debug
 
     if not agree:
@@ -145,7 +155,6 @@ if st.button("🔍 Predict Liquidity"):
             raw_output = model.predict(input_data)[0]
             st.write("Model raw output:", raw_output)  # Debug
 
-            # Handle if model returns label instead of numeric score
             try:
                 score = float(raw_output)
                 liquidity_level = classify_liquidity(score)
