@@ -33,9 +33,9 @@ st.markdown("""
             margin-bottom: 30px;
         }
 
-        /* Field labels (light blue) */
+        /* Field labels (light blue, bigger font) */
         .stNumberInput label, .stTextInput label, .stSelectbox label {
-            font-size: 22px !important;
+            font-size: 26px !important;  /* Increased font size */
             font-weight: bold !important;
             color: #4dc3ff !important; 
         }
