@@ -21,7 +21,7 @@ st.markdown("""
             text-shadow: 0px 0px 25px #ff66ff;
         }
 
-        /* Subtitle (same style & size as labels) */
+        /* Subtitle */
         .subtitle {
             text-align: center;
             font-size: 32px !important;
@@ -68,14 +68,34 @@ st.markdown("""
             color: #4dc3ff !important;
         }
 
-        /* Prediction Result (red) */
+        /* EVERYTHING below disclaimer in pink */
+        .below-disclaimer {
+            color: #ff66ff !important;
+            font-weight: bold;
+        }
+
+        /* Prediction Result (pink now) */
         .prediction-box {
             background-color: #1a1a1a;
             padding: 15px;
             border-radius: 12px;
             font-size: 18px;
             margin-top: 20px;
-            color: #ff4d4d !important;
+            color: #ff66ff !important;
+        }
+
+        /* Pink button text */
+        div.stButton > button {
+            background-color: #1a1a1a !important;
+            color: #ff66ff !important;
+            font-size: 18px !important;
+            font-weight: bold;
+            border: 2px solid #ff66ff !important;
+            border-radius: 8px;
+        }
+        div.stButton > button:hover {
+            background-color: #ff66ff !important;
+            color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -103,10 +123,10 @@ st.markdown(f'<div class="market-cap">💰 Auto-Calculated Market Cap: {market_c
 # Disclaimer
 st.markdown('<div class="disclaimer-box">⚠ Disclaimer: This tool uses an AI/ML model to make predictions based on input data. We do not guarantee accuracy, and we are not responsible for any financial losses incurred from using this app.</div>', unsafe_allow_html=True)
 
-# Checkbox to confirm disclaimer
-agree = st.checkbox("✅ I understand the disclaimer")
+# BELOW DISCLAIMER CONTENT
+st.markdown('<div class="below-disclaimer">', unsafe_allow_html=True)
 
-# Prediction Button
+agree = st.checkbox("✅ I understand the disclaimer")
 if agree:
     if st.button("🔮 Predict Liquidity Level"):
         # Simple placeholder prediction logic
@@ -118,3 +138,6 @@ if agree:
             prediction = "Low Liquidity"
 
         st.markdown(f'<div class="prediction-box">📊 Prediction: {prediction}</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
