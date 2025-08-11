@@ -3,30 +3,33 @@ import joblib
 import pandas as pd
 import os
 
-# 🎯 Load ML Model
-model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
-model = joblib.load(model_path)
+# 🎯 Load ML Model with Error Handling
+try:
+    model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
+    model = joblib.load(model_path)
+except Exception as e:
+    st.error(f"Error loading the model: {e}")
 
 # 🌈 Streamlit Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 💅 Custom CSS Styling with Peacock-Inspired Background and Hover Effects
+# 💅 Custom CSS Styling with Gradient Background and Hover Effects
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #1f5f5f, #00bfae, #6ed0c7); /* Peacock-inspired gradient */
+        background: linear-gradient(135deg, #ff6f61, #ffb3ba); /* Warm gradient background */
         font-family: 'Segoe UI', sans-serif;
     }
     .title {
         text-align: center;
-        color: #ffffff; /* White color for title to contrast with background */
+        color: #0044cc;
         font-size: 50px;
         font-weight: bold;
         margin-top: 15px;
     }
     .subtitle {
         text-align: center;
-        color: #f0f0f0; /* Subtle off-white color */
+        color: #333;
         font-size: 20px;
         margin-bottom: 20px;
     }
@@ -43,8 +46,8 @@ st.markdown("""
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     }
     .disclaimer {
-        background-color: #f1f8f8;
-        border-left: 6px solid #6ed0c7; /* A peacock-like green color */
+        background-color: #fff4e6;
+        border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
@@ -159,11 +162,12 @@ st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
     if agree:
         try:
+            # Try making a prediction
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
-            # 🎯 Show results
+            # 🎯 Show prediction results
             st.markdown(f"""
             <div class='section'>
                 <h3>📊 Prediction Result</h3>
@@ -176,8 +180,8 @@ if st.button("🔍 Predict Liquidity", help="Click to generate prediction"):
             """, unsafe_allow_html=True)
 
         except Exception as e:
+            # Handle any exceptions during prediction
             st.error(f"❌ Prediction failed: {e}")
     else:
         st.warning("⚠️ Please accept the disclaimer to use the prediction feature.")
-
-
+                
