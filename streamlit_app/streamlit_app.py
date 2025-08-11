@@ -25,7 +25,7 @@ st.markdown("""
             text-shadow: 0px 0px 25px #ff66ff;
         }
 
-        /* Subtitle text */
+        /* Subtitle */
         .subtitle {
             text-align: center;
             font-size: 20px;
@@ -40,7 +40,7 @@ st.markdown("""
             color: #4dc3ff !important; 
         }
 
-        /* Input box styling */
+        /* Input styling */
         .stNumberInput input {
             font-size: 20px !important;
             background-color: #2a2a2a !important;
@@ -49,27 +49,34 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* All text below labels (market cap, disclaimer, checkbox) in red */
-        .market-cap, .stAlert p, .stCheckbox label, .prediction-box {
-            color: #ff4d4d !important;
-            font-weight: bold !important;
-        }
-
-        /* Market Cap Box */
+        /* Market Cap (pink) */
         .market-cap {
             background-color: #1a1a1a;
             padding: 12px;
             border-radius: 10px;
             font-size: 18px;
+            font-weight: bold;
+            color: #ff66ff !important;
         }
 
-        /* Prediction Result Box */
+        /* Disclaimer (blue) */
+        .disclaimer-box {
+            background-color: #1a1a1a;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #4dc3ff !important;
+        }
+
+        /* Prediction Result (red) */
         .prediction-box {
             background-color: #1a1a1a;
             padding: 15px;
             border-radius: 12px;
             font-size: 18px;
             margin-top: 20px;
+            color: #ff4d4d !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -90,30 +97,32 @@ with col2:
     close_price = st.number_input("🔒 Close Price", min_value=0.0, format="%.4f")
     volume = st.number_input("📦 Volume", min_value=0.0, format="%.4f")
 
-# Auto-calculated market cap
+# Auto-calculated market cap (PINK)
 market_cap = close_price * volume
 st.markdown(f'<div class="market-cap">💰 <b>Auto-Calculated Market Cap:</b> {market_cap:,.2f}</div>', unsafe_allow_html=True)
 
-# Disclaimer
-st.warning("""
-⚠ **Disclaimer**:  
-This tool uses an AI/ML model to make predictions based on input data.  
+# Disclaimer (BLUE)
+st.markdown("""
+<div class="disclaimer-box">
+⚠ <b>Disclaimer:</b><br>
+This tool uses an AI/ML model to make predictions based on input data.<br>
 We do not guarantee accuracy, and we are not responsible for any financial losses incurred from using this app.
-""")
+</div>
+""", unsafe_allow_html=True)
 
-# Prediction button
+# Checkbox
 accept = st.checkbox("✅ I understand the disclaimer")
 
+# Predict Button
 if st.button("🔮 Predict Liquidity"):
     if accept:
         st.markdown("""
             <div class="prediction-box">
-            📊 **Prediction Result**  
-            💧 Liquidity Score: 0.07  
-            🚨 Liquidity Level: **Low**  
+            📊 <b>Prediction Result</b><br>
+            💧 Liquidity Score: 0.07<br>
+            🚨 Liquidity Level: <b>Low</b><br>
             📈 Price Trend Hint: No Clear Price Movement
             </div>
         """, unsafe_allow_html=True)
     else:
         st.error("Please accept the disclaimer before predicting.")
-
