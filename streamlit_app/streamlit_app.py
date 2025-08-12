@@ -11,12 +11,12 @@ navbar_html = """
   color:white; 
   display:flex; 
   align-items:center; 
-  padding:12px 30px; 
+  padding:32px 30px; 
   justify-content:space-between; 
   border-radius:0 0 10px 10px; 
   box-shadow:0 4px 8px rgba(0,0,0,0.1); 
   font-family: 'Poppins', Arial, sans-serif;
-  width: 200vw;
+  width: 100vw;
   position: fixed;
   top: 0;
   left: 0;
