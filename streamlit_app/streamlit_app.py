@@ -10,14 +10,19 @@ try:
     model = joblib.load(model_path)
 except Exception as e:
     st.error(f"Error loading the model: {e}")
+    model = None  # To prevent further errors if model not loaded
 
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Load and display navbar HTML
+# Load and display navbar HTML safely
 def load_navbar():
-    with open("crypto.html", "r", encoding="utf-8") as f:
-        return f.read()
+    try:
+        with open("crypto.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        st.warning("Navbar HTML file not found. Skipping navbar.")
+        return "<!-- Navbar file missing -->"
 
 navbar_html = load_navbar()
 components.html(navbar_html, height=110, scrolling=False)
@@ -183,7 +188,9 @@ agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
 # Prediction button
 if st.button("Predict Liquidity"):
-    if agree:
+    if not model:
+        st.error("Model not loaded. Prediction unavailable.")
+    elif agree:
         try:
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
