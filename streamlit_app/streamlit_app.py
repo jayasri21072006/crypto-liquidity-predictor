@@ -13,68 +13,48 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Dark theme CSS
+# Custom CSS
 st.markdown("""
     <style>
-    body {
-        background-color: #121212;
-        color: #e0e0e0;
-    }
     .title {
         text-align: center;
-        color: #64b5f6;  /* light blue */
-        font-size: 48px;
-        font-weight: 700;
+        color: #0044cc;
+        font-size: 50px;
+        font-weight: bold;
         margin-top: 15px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .subtitle {
         text-align: center;
-        color: #b0bec5;
+        color: #333;
         font-size: 20px;
         margin-bottom: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .section {
-        background-color: #1e1e1e;
-        border-radius: 12px;
+        background-color: #ffffff;
+        border-radius: 15px;
         padding: 20px;
-        box-shadow: 0 4px 12px rgba(100, 181, 246, 0.3);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #e0e0e0;
     }
     .disclaimer {
-        background-color: #263238;
-        border-left: 6px solid #fbc02d;
+        background-color: #fff4e6;
+        border-left: 6px solid #ff9800;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
-        font-size: 16px;
-        color: #fff9c4;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 18px;
     }
     .result-high {
-        color: #81c784; /* soft green */
-        font-weight: 600;
+        color: #00c853;
+        font-weight: bold;
     }
     .result-medium {
-        color: #ffb74d; /* warm gold */
-        font-weight: 600;
+        color: #ffca28;
+        font-weight: bold;
     }
     .result-low {
-        color: #e57373; /* soft red */
-        font-weight: 600;
-    }
-    /* Market cap text */
-    div[style*="Auto-calculated Market Cap"] {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #90caf9;
-    }
-    /* Footer styling */
-    p {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #90a4ae;
+        color: #d50000;
+        font-weight: bold;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -82,7 +62,7 @@ st.markdown("""
 # Title & Subtitle without emoji
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
-st.markdown("<hr style='border-color:#64b5f6'>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
 # Initialize session state for demo data loading
 if 'demo_loaded' not in st.session_state:
@@ -138,11 +118,11 @@ market_cap = close_price * volume
 # Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
 st.markdown(f"""
     <div style="margin-top: 8px; font-weight: bold;">
-        Auto-calculated Market Cap: <span style="color:#64b5f6;">${market_cap:,.2f}</span>
+        Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
     </div>
 """, unsafe_allow_html=True)
 
-# Price Overview Chart (Streamlit default line chart)
+# Price Overview Chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
@@ -216,8 +196,8 @@ if st.button("Predict Liquidity"):
 
 # Footer with Coinsight ML team name
 st.markdown("""
-<hr style="border-color:#64b5f6;">
-<p style='text-align:center; font-size:14px; color:#90a4ae;'>
+<hr>
+<p style='text-align:center; font-size:14px; color:grey;'>
     Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
