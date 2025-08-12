@@ -22,11 +22,7 @@ navbar_html = """
   left: 0;
   z-index: 9999;
   box-sizing: border-box;
- 
 ">
-  <!-- navbar content here -->
-</nav>
-
   <div style="display:flex; align-items:center;">
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
@@ -50,6 +46,7 @@ navbar_html = """
   </div>
 </nav>
 """
+
 
 # Load ML Model safely
 def load_model():
