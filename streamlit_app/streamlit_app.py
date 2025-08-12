@@ -67,14 +67,28 @@ st.markdown("<hr>", unsafe_allow_html=True)
 # User Inputs with Market Cap shown below Low Price
 col1, col2 = st.columns(2)
 with col1:
-    open_price = st.number_input('Open Price', value=0.0, format="%.4f")
-    high_price = st.number_input('High Price', value=0.0, format="%.4f")
-    low_price = st.number_input('Low Price', value=0.0, format="%.4f")
-    # Market Cap calculation and display below Low Price
-    volume = 0  # initialize volume so accessible later
+    open_price = st.number_input(
+        'Open Price', value=0.0, format="%.4f",
+        help="The price at which the cryptocurrency opened during the trading period."
+    )
+    high_price = st.number_input(
+        'High Price', value=0.0, format="%.4f",
+        help="The highest price the cryptocurrency reached during the trading period."
+    )
+    low_price = st.number_input(
+        'Low Price', value=0.0, format="%.4f",
+        help="The lowest price the cryptocurrency reached during the trading period."
+    )
+    # volume initialized later
 with col2:
-    close_price = st.number_input('Close Price', value=0.0, format="%.4f")
-    volume = st.number_input('Volume', value=0.0, format="%.4f")
+    close_price = st.number_input(
+        'Close Price', value=0.0, format="%.4f",
+        help="The price at which the cryptocurrency closed during the trading period."
+    )
+    volume = st.number_input(
+        'Volume', value=0.0, format="%.4f",
+        help="The total amount of cryptocurrency traded during the trading period."
+    )
 
 market_cap = close_price * volume
 
