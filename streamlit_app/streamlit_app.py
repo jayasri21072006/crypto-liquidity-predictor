@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import joblib
 import pandas as pd
-import os
 
 # --- Updated Navbar HTML with fixed position and full width ---
 navbar_html = """
@@ -175,7 +174,10 @@ navbar_html = """
 </html>
 """
 
-# Render the navbar component at the top of your Streamlit app
+# Set page config first
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
+
+# Render the navbar component once at the top of your Streamlit app
 components.html(navbar_html, height=80, scrolling=False)
 
 # Add padding to body in Streamlit so your content doesn't go behind the fixed navbar
@@ -188,29 +190,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
-# Load ML Model safely
+# Load ML Model safely with relative path (no __file__)
 def load_model():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
+        model_path = 'crypto_liquidity_model.pkl'  # Ensure this file is in your app folder
         return joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
 
-# Page setup
-st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
-
-# Show navbar
-components.html(navbar_html, height=80, scrolling=False)
-
-# Add padding to body to prevent overlap with fixed navbar
+# Title & subtitle styles
 st.markdown("""
 <style>
-body {
-    padding-top: 80px;
-}
 .title {
     text-align: center;
     color: #0044cc;
@@ -254,7 +245,6 @@ body {
 </style>
 """, unsafe_allow_html=True)
 
-# Title & subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -321,7 +311,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# Load model
+# Load model once here
 model = load_model()
 
 # Liquidity classifier
@@ -375,4 +365,3 @@ if st.button("Predict Liquidity"):
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
-
