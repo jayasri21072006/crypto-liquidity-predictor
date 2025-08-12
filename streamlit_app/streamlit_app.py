@@ -4,11 +4,11 @@ import joblib
 import pandas as pd
 import os
 
-# Navbar HTML with light theme
+# --- Updated Navbar HTML with fixed position and full width ---
 navbar_html = """
 <nav style="
-  background-color:#f5f7fa; 
-  color:#102a44; 
+  background-color:#102a44; 
+  color:white; 
   display:flex; 
   align-items:center; 
   padding:12px 30px; 
@@ -24,21 +24,21 @@ navbar_html = """
   box-sizing: border-box;
 ">
   <div style="display:flex; align-items:center;">
-    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #4ca1af, #c4e0e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
+    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
 
   <ul class="nav-links" style="list-style:none; display:flex; gap: 25px; margin:0; padding:0;">
-    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Insights Blog</a></li>
+    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Market Updates</a></li>
+    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Coin List</a></li>
+    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Insights Blog</a></li>
   </ul>
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(80%); transition:filter 0.3s ease;"></a>
-      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(80%); transition:filter 0.3s ease; margin-left: 10px;"></a>
+      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
-    <select aria-label="Select Language" style="background:transparent; border:none; color:#102a44; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
+    <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
       <option value="en" selected>English 🇬🇧</option>
       <option value="es">Español 🇪🇸</option>
       <option value="fr">Français 🇫🇷</option>
@@ -47,134 +47,67 @@ navbar_html = """
 </nav>
 """
 
-# Load model function
+# Load ML Model safely
 def load_model():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        script_dir = os.path.dirname(os.path.abspath(_file_))
         model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
         return joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
 
-# Streamlit page config
+# Page setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
 # Show navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# Light-themed CSS with currency background pattern
+# CSS Styles
 st.markdown("""
 <style>
 body {
     padding-top: 80px;
-    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-    background-color: #f9fafb;
-    background-repeat: repeat;
-    background-size: 60px 60px;
-    color: #102a44;
-    font-family: 'Poppins', Arial, sans-serif;
 }
-
-.stApp {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 12px;
-    padding: 30px 40px 40px 40px;
-    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.15);
-}
-
 .title {
     text-align: center;
-    color: #102a44 !important;
-    font-size: 48px;
-    font-weight: 700;
+    color: #0044cc;
+    font-size: 50px;
+    font-weight: bold;
     margin-top: 15px;
 }
-
 .subtitle {
     text-align: center;
-    color: #375a7f !important;
+    color: #333;
     font-size: 20px;
     margin-bottom: 20px;
 }
-
 .section {
-    background-color: #f0f5fa;
+    background-color: #ffffff;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0px 4px 10px rgba(16, 42, 68, 0.1);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
-    color: #102a44 !important;
 }
-
 .disclaimer {
-    background-color: #fff9e6;
-    border-left: 6px solid #ffb347;
+    background-color: #fff4e6;
+    border-left: 6px solid #ff9800;
     padding: 15px;
     border-radius: 10px;
     margin-top: 30px;
-    font-size: 14px;
-    color: #463f0a;
+    font-size: 18px;
 }
-
 .result-high {
-    color: #388e3c;
+    color: #00c853;
     font-weight: bold;
 }
-
 .result-medium {
-    color: #fbc02d;
+    color: #ffca28;
     font-weight: bold;
 }
-
 .result-low {
-    color: #d32f2f;
+    color: #d50000;
     font-weight: bold;
-}
-
-nav {
-    background-color: #f5f7fa !important;
-}
-
-/* Inputs and buttons styling */
-.stNumberInput>div>input {
-    background-color: #fff !important;
-    color: #102a44 !important;
-    border: 1.5px solid #cdd9e5;
-    border-radius: 6px;
-    padding: 8px;
-}
-
-.stButton>button {
-    background-color: #4ca1af;
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.stButton>button:hover {
-    background-color: #397f86;
-}
-
-select {
-    background-color: #fff;
-    color: #102a44;
-    font-weight: 600;
-    padding: 5px;
-    border-radius: 6px;
-    border: 1.5px solid #cdd9e5;
-}
-
-a {
-    color: #4ca1af;
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -183,10 +116,13 @@ a:hover {
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
+
+# List of coins (abbreviated for brevity, but you can include the full list)
 coin_names = sorted([
     'Bitcoin', 'Ethereum', 'Tether', 'BNB', 'XRP', 'Solana', 'Cardano',
     'Dogecoin', 'Shiba Inu', 'Polygon', 'Litecoin', 'Polkadot', 'Avalanche',
     'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
+    # Add the full list here as needed
 ])
 
 # Optional Coin Name input
@@ -223,9 +159,9 @@ with col1:
     # Market Cap auto-calculation under low price
     market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
-    <div style="margin-top: 10px; font-weight: bold; font-size: 16px; color:white;">
+    <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
         Auto-calculated Market Cap:<br>
-        <span style="color:#34e89e;">${market_cap:,.2f}</span>
+        <span style="color:#0044cc;">${market_cap:,.2f}</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -277,7 +213,7 @@ def predict_price_trend(open_p, close_p):
 
 # Disclaimer
 st.markdown("""
-<div class="disclaimer">
+<div class="disclaimer" style="font-size: 14px;">
     <strong>Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
     Predictions are not guaranteed for any particular cryptocurrency or token.<br>
