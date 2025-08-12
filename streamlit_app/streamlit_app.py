@@ -77,11 +77,13 @@ with col2:
 # Market Cap calculation
 market_cap = close_price * volume
 
-st.markdown(f"""
-<div class="section">
-    Market Cap: <code>${market_cap:,.2f}</code>
-</div>
-""", unsafe_allow_html=True)
+# Show Market Cap only if > 0
+if market_cap > 0:
+    st.markdown(f"""
+    <div class="section">
+        Market Cap: <code>${market_cap:,.2f}</code>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Price Overview Chart
 price_df = pd.DataFrame({
@@ -141,15 +143,20 @@ if st.button("Predict Liquidity"):
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
 
-            st.markdown(f"""
+            # Build result HTML
+            result_html = f"""
             <div class='section' style='text-align:center'>
                 <h2>Prediction Result</h2>
                 <p><strong>Liquidity Score:</strong> {score:.2f}</p>
                 <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
-                <p><strong>Market Cap:</strong> ${market_cap:,.2f}</p>
-                <p><strong>Price Trend:</strong> {trend}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            """
+
+            if market_cap > 0:
+                result_html += f"<p><strong>Market Cap:</strong> ${market_cap:,.2f}</p>"
+
+            result_html += f"<p><strong>Price Trend:</strong> {trend}</p></div>"
+
+            st.markdown(result_html, unsafe_allow_html=True)
 
         except Exception as e:
             st.error(f"Prediction failed: {e}")
