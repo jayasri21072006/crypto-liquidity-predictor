@@ -1,163 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CryptoPredictions Navbar</title>
-  
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
-  
-  <style>
-    /* Reset */
+<style>
     body {
-      margin: 0;
-      font-family: 'Poppins', Arial, sans-serif;
-      background-color: #f4f7fa;
+        margin: 0;
+        font-family: 'Poppins', Arial, sans-serif;
+        background-color: #f4f7fa;
     }
 
     nav {
-      background-color: #102a44; /* slightly different dark blue */
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 12px 30px;
-      justify-content: space-between;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+        background-color: #102a44;
+        color: white;
+        display: flex;
+        align-items: center;
+        padding: 12px 30px;
+        justify-content: space-between;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
-      font-weight: 700;
-      font-size: 26px;
-      background: linear-gradient(90deg, #34e89e, #0f3443);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      cursor: default;
-      user-select: none;
+        font-weight: 700;
+        font-size: 26px;
+        background: linear-gradient(90deg, #34e89e, #0f3443);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        cursor: default;
+        user-select: none;
     }
 
-    .tagline {
-      font-weight: 300;
-      font-size: 14px;
-      color: #a0b9c7;
-      margin-left: 8px;
-      font-style: italic;
+    .title {
+        text-align: center;
+        color: #0044cc;
+        font-size: 50px;
+        font-weight: bold;
+        margin-top: 15px;
     }
 
-    ul.nav-links {
-      list-style: none;
-      display: flex;
-      margin: 0;
-      padding: 0;
+    .subtitle {
+        text-align: center;
+        color: #333;
+        font-size: 20px;
+        margin-bottom: 20px;
     }
 
-    ul.nav-links li {
-      margin: 0 20px;
+    .section {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
     }
 
-    ul.nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      transition: color 0.3s ease;
+    .disclaimer {
+        background-color: #fff4e6;
+        border-left: 6px solid #ff9800;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 30px;
+        font-size: 18px;
     }
 
-    ul.nav-links li a:hover {
-      color: #34e89e; /* turquoise accent */
-      text-decoration: underline;
+    .result-high {
+        color: #00c853;
+        font-weight: bold;
     }
 
-    .right-section {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    .result-medium {
+        color: #ffca28;
+        font-weight: bold;
     }
 
-    .social-icons a img {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      filter: brightness(100%);
-      transition: filter 0.3s ease;
+    .result-low {
+        color: #d50000;
+        font-weight: bold;
     }
-
-    .social-icons a img:hover {
-      filter: brightness(130%);
-    }
-
-    .language-select {
-      background: transparent;
-      border: none;
-      color: white;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-
-    .language-select:hover, .language-select:focus {
-      background-color: rgba(255 255 255 / 0.2);
-      outline: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-        gap: 10px;
-      }
-
-      ul.nav-links {
-        flex-wrap: wrap;
-        gap: 15px;
-      }
-
-      .right-section {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 15px;
-      }
-    }
-  </style>
-
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>₿</text></svg>" type="image/svg+xml" />
-</head>
-<body>
+</style>
 
 <nav>
-  <div style="display:flex; align-items:center;">
-    <div class="logo">CryptoPredictions</div>
-    <div class="tagline">Your #1 source for crypto insights</div>
-  </div>
-
-  <ul class="nav-links">
-    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a></li>
-  </ul>
-
-  <div class="right-section">
-    <div class="social-icons">
-      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" />
-      </a>
-      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" />
-      </a>
-    </div>
-    <select class="language-select" aria-label="Select Language">
-      <option value="en" selected>English 🇬🇧</option>
-      <option value="es">Español 🇪🇸</option>
-      <option value="fr">Français 🇫🇷</option>
-    </select>
-  </div>
+    <div class="logo">Crypto Liquidity Predictor</div>
 </nav>
-
-</body>
-</html>
