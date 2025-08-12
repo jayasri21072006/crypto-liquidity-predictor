@@ -79,16 +79,9 @@ st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidi
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # Initialize session state for inputs on first run or demo load
-if "open_price" not in st.session_state:
-    st.session_state.open_price = 0.0
-if "high_price" not in st.session_state:
-    st.session_state.high_price = 0.0
-if "low_price" not in st.session_state:
-    st.session_state.low_price = 0.0
-if "close_price" not in st.session_state:
-    st.session_state.close_price = 0.0
-if "volume" not in st.session_state:
-    st.session_state.volume = 0.0
+for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
+    if key not in st.session_state:
+        st.session_state[key] = 0.0
 
 # Demo data function
 def load_demo_data():
@@ -102,7 +95,7 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# User Inputs with Market Cap shown below Low Price
+# User Inputs with Market Cap shown below Low Price inside same column
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input(
@@ -117,6 +110,16 @@ with col1:
         'Low Price', value=st.session_state.low_price, format="%.4f",
         help="The lowest price the cryptocurrency reached during the trading period."
     )
+
+    # Calculate Market Cap inside col1 below Low Price input
+    market_cap = st.session_state.close_price * st.session_state.volume
+    st.markdown(f"""
+        <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
+            Auto-calculated Market Cap:<br>
+            <span style="color:#0044cc;">${market_cap:,.2f}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
 with col2:
     close_price = st.number_input(
         'Close Price', value=st.session_state.close_price, format="%.4f",
@@ -127,16 +130,7 @@ with col2:
         help="The total amount of cryptocurrency traded during the trading period."
     )
 
-market_cap = close_price * volume
-
-# Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
-st.markdown(f"""
-    <div style="margin-top: 8px; font-weight: bold;">
-        Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
-    </div>
-""", unsafe_allow_html=True)
-
-# Price Overview Chart
+# Prepare price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
@@ -150,7 +144,7 @@ input_data = pd.DataFrame({
     'Low': [low_price],
     'Close': [close_price],
     'Volume': [volume],
-    'Market Cap': [market_cap],
+    'Market Cap': [close_price * volume],
     'SMA_5': [0],
     'EMA_12': [0],
     'RSI': [0],
