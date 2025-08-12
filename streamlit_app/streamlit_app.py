@@ -213,9 +213,10 @@ def predict_price_trend(open_p, close_p):
 
 # Disclaimer
 st.markdown("""
-<div class="disclaimer">
+<div class="disclaimer" style="font-size: 14px;">
     <strong>Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
+    Predictions are not guaranteed for any particular cryptocurrency or token.<br>
     No guarantees are made about accuracy or reliability. Use at your own risk.
 </div>
 """, unsafe_allow_html=True)
