@@ -13,32 +13,22 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Inject external HTML (CSS + navbar)
+# Load Custom HTML Navbar
 html_file_path = os.path.join(os.path.dirname(__file__), 'crypto.html')
-try:
-    with open(html_file_path, 'r') as f:
-        st.markdown(f.read(), unsafe_allow_html=True)
-except Exception as e:
-    st.error(f"Error loading HTML file: {e}")
+with open(html_file_path, 'r') as f:
+    st.markdown(f.read(), unsafe_allow_html=True)
 
-# Title & Subtitle (can also go in HTML if preferred)
+# Page Title & Subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # Initialize session state
-if "open_price" not in st.session_state:
-    st.session_state.open_price = 0.0
-if "high_price" not in st.session_state:
-    st.session_state.high_price = 0.0
-if "low_price" not in st.session_state:
-    st.session_state.low_price = 0.0
-if "close_price" not in st.session_state:
-    st.session_state.close_price = 0.0
-if "volume" not in st.session_state:
-    st.session_state.volume = 0.0
+for field in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
+    if field not in st.session_state:
+        st.session_state[field] = 0.0
 
-# Demo data function
+# Demo button
 def load_demo_data():
     st.session_state.open_price = 56787.5
     st.session_state.high_price = 64776.4
@@ -46,11 +36,10 @@ def load_demo_data():
     st.session_state.close_price = 63000.0
     st.session_state.volume = 123456.789
 
-# Demo data button
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# User Inputs
+# Input Columns
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
@@ -60,7 +49,7 @@ with col2:
     close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
     volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
-# Calculate Market Cap
+# Market Cap Calculation
 market_cap = close_price * volume
 st.markdown(f"""
     <div style="margin-top: 8px; font-weight: bold;">
@@ -68,14 +57,14 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Line Chart
+# Price Chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare Input Data
+# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -89,7 +78,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# Liquidity Classification
+# Classification
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -98,7 +87,6 @@ def classify_liquidity(score):
     else:
         return "<span class='result-high'>High</span>"
 
-# Trend Prediction
 def predict_price_trend(open_price, close_price):
     if close_price > open_price:
         return "Price may go Up"
@@ -118,7 +106,7 @@ st.markdown("""
 
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Predict Button
+# Predict
 if st.button("Predict Liquidity"):
     if agree:
         try:
