@@ -3,17 +3,17 @@ import joblib
 import pandas as pd
 import os
 
-# 🎯 Load ML Model
+# Load ML Model
 try:
     model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
     model = joblib.load(model_path)
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
-# 🌈 Page Setup
+# Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# 🎨 Custom CSS
+# Custom CSS
 st.markdown("""
     <style>
     .title {
@@ -64,26 +64,26 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# User Inputs
+# User Inputs with Market Cap shown below Low Price
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=0.0, format="%.4f")
     high_price = st.number_input('High Price', value=0.0, format="%.4f")
     low_price = st.number_input('Low Price', value=0.0, format="%.4f")
+    # Market Cap calculation and display below Low Price
+    volume = 0  # initialize volume so accessible later
 with col2:
     close_price = st.number_input('Close Price', value=0.0, format="%.4f")
     volume = st.number_input('Volume', value=0.0, format="%.4f")
 
-# Market Cap calculation
 market_cap = close_price * volume
 
-# Show Market Cap only if > 0 (above prediction button)
-if market_cap > 0:
-    st.markdown(f"""
-    <div class="section">
-        Market Cap: <code>${market_cap:,.2f}</code>
+# Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
+st.markdown(f"""
+    <div style="margin-top: 8px; font-weight: bold;">
+        Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Price Overview Chart
 price_df = pd.DataFrame({
