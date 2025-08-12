@@ -4,30 +4,38 @@ import joblib
 import pandas as pd
 import os
 
-# Load ML Model
-try:
-    model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
-    model = joblib.load(model_path)
-except Exception as e:
-    st.error(f"Error loading the model: {e}")
-    model = None  # To prevent further errors if model not loaded
-
-# Page Setup
-st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
-
-# Load and display navbar HTML safely
+# Function to load navbar HTML safely with absolute path
 def load_navbar():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    navbar_path = os.path.join(script_dir, "crypto.html")
     try:
-        with open("crypto.html", "r", encoding="utf-8") as f:
+        with open(navbar_path, "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         st.warning("Navbar HTML file not found. Skipping navbar.")
         return "<!-- Navbar file missing -->"
 
+# Load model safely with absolute path
+def load_model():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
+    try:
+        return joblib.load(model_path)
+    except Exception as e:
+        st.error(f"Error loading the model: {e}")
+        return None
+
+# Page setup
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
+
+# Load and show navbar
 navbar_html = load_navbar()
 components.html(navbar_html, height=110, scrolling=False)
 
-# Custom CSS
+# Load model
+model = load_model()
+
+# Your custom CSS
 st.markdown("""
     <style>
     .title {
@@ -73,17 +81,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Title & Subtitle without emoji
+# Title & Subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state for inputs on first run or demo load
+# Initialize session state for inputs if not set
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
 
-# Demo data function
+# Demo data loader
 def load_demo_data():
     st.session_state.open_price = 56787.5
     st.session_state.high_price = 64776.4
@@ -91,27 +99,19 @@ def load_demo_data():
     st.session_state.close_price = 63000.0
     st.session_state.volume = 123456.789
 
-# Demo data button
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# User Inputs with Market Cap shown below Low Price inside same column
+# Input columns
 col1, col2 = st.columns(2)
 with col1:
-    open_price = st.number_input(
-        'Open Price', value=st.session_state.open_price, format="%.4f",
-        help="The price at which the cryptocurrency opened during the trading period."
-    )
-    high_price = st.number_input(
-        'High Price', value=st.session_state.high_price, format="%.4f",
-        help="The highest price the cryptocurrency reached during the trading period."
-    )
-    low_price = st.number_input(
-        'Low Price', value=st.session_state.low_price, format="%.4f",
-        help="The lowest price the cryptocurrency reached during the trading period."
-    )
-
-    # Calculate Market Cap inside col1 below Low Price input
+    open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f",
+                                help="The price at which the cryptocurrency opened during the trading period.")
+    high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f",
+                                help="The highest price the cryptocurrency reached during the trading period.")
+    low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f",
+                               help="The lowest price the cryptocurrency reached during the trading period.")
+    # Market Cap under Low Price
     market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
         <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
@@ -121,23 +121,19 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    close_price = st.number_input(
-        'Close Price', value=st.session_state.close_price, format="%.4f",
-        help="The price at which the cryptocurrency closed during the trading period."
-    )
-    volume = st.number_input(
-        'Volume', value=st.session_state.volume, format="%.4f",
-        help="The total amount of cryptocurrency traded during the trading period."
-    )
+    close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f",
+                                 help="The price at which the cryptocurrency closed during the trading period.")
+    volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f",
+                            help="The total amount of cryptocurrency traded during the trading period.")
 
-# Prepare price overview chart
+# Price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input data for model
+# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -151,7 +147,6 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# Classification logic without emojis
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -177,10 +172,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Accept disclaimer checkbox
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Prediction button
 if st.button("Predict Liquidity"):
     if not model:
         st.error("Model not loaded. Prediction unavailable.")
@@ -204,7 +197,7 @@ if st.button("Predict Liquidity"):
     else:
         st.warning("Please accept the disclaimer to proceed.")
 
-# Footer with Coinsight ML team name
+# Footer
 st.markdown("""
 <hr>
 <p style='text-align:center; font-size:14px; color:grey;'>
