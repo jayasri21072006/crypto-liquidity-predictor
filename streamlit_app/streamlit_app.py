@@ -64,29 +64,52 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
+# Initialize session state for inputs on first run or demo load
+if "open_price" not in st.session_state:
+    st.session_state.open_price = 0.0
+if "high_price" not in st.session_state:
+    st.session_state.high_price = 0.0
+if "low_price" not in st.session_state:
+    st.session_state.low_price = 0.0
+if "close_price" not in st.session_state:
+    st.session_state.close_price = 0.0
+if "volume" not in st.session_state:
+    st.session_state.volume = 0.0
+
+# Demo data function
+def load_demo_data():
+    st.session_state.open_price = 56787.5
+    st.session_state.high_price = 64776.4
+    st.session_state.low_price = 55000.0
+    st.session_state.close_price = 63000.0
+    st.session_state.volume = 123456.789
+
+# Demo data button
+if st.button("Load Demo Data"):
+    load_demo_data()
+
 # User Inputs with Market Cap shown below Low Price
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input(
-        'Open Price', value=0.0, format="%.4f",
+        'Open Price', value=st.session_state.open_price, format="%.4f",
         help="The price at which the cryptocurrency opened during the trading period."
     )
     high_price = st.number_input(
-        'High Price', value=0.0, format="%.4f",
+        'High Price', value=st.session_state.high_price, format="%.4f",
         help="The highest price the cryptocurrency reached during the trading period."
     )
     low_price = st.number_input(
-        'Low Price', value=0.0, format="%.4f",
+        'Low Price', value=st.session_state.low_price, format="%.4f",
         help="The lowest price the cryptocurrency reached during the trading period."
     )
-    # volume initialized later
 with col2:
     close_price = st.number_input(
-        'Close Price', value=0.0, format="%.4f",
+        'Close Price', value=st.session_state.close_price, format="%.4f",
         help="The price at which the cryptocurrency closed during the trading period."
     )
     volume = st.number_input(
-        'Volume', value=0.0, format="%.4f",
+        'Volume', value=st.session_state.volume, format="%.4f",
         help="The total amount of cryptocurrency traded during the trading period."
     )
 
