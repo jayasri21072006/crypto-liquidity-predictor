@@ -1,4 +1,35 @@
-import streamlit as st
+[1:57 pm, 12/08/2025] prosperous victory ✨: import streamlit as st
+import streamlit.components.v1 as components
+import joblib
+import pandas as pd
+import os
+
+# --- Updated Navbar HTML with fixed position and full width ---
+navbar_html = """
+<nav style="
+  background-color:#102a44; 
+  color:white; 
+  display:flex; 
+  align-items:center; 
+  padding:12px 30px; /* Increased vertical padding */
+  justify-content:space-between; 
+  border-radius:0 0 10px 10px; 
+  box-shadow:0 4px 8px rgba(0,0,0,0.1); 
+  font-family: 'Poppins', Arial, sans-serif;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-sizing: border-box;
+ 
+">
+  <!-- navbar content here -->
+</nav>
+
+  <div style="display:flex; align-items:center;">
+    <div style="font-weight:700; font-size:26px; background: linear-gradien…
+[1:59 pm, 12/08/2025] prosperous victory ✨: import streamlit as st
 import streamlit.components.v1 as components
 import joblib
 import pandas as pd
@@ -27,12 +58,11 @@ navbar_html = """
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
 
-  ul class="nav-links">
-    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a></li>
+  <ul style="list-style:none; display:flex; margin:0; padding:0;">
+    <li style="margin: 0 20px;"><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Market Updates</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Coin List</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Insights Blog</a></li>
   </ul>
-
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
@@ -51,7 +81,7 @@ navbar_html = """
 # Load ML Model safely
 def load_model():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        script_dir = os.path.dirname(os.path.abspath(_file_))
         model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
         return joblib.load(model_path)
     except Exception as e:
@@ -234,10 +264,3 @@ if st.button("Predict Liquidity"):
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
-
-# Added footer text exactly as requested
-st.markdown("""
-<p style='text-align:center; font-size:14px; color:grey;'>
-    Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
-</p>
-""", unsafe_allow_html=True)
