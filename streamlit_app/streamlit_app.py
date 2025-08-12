@@ -4,11 +4,11 @@ import joblib
 import pandas as pd
 import os
 
-# --- Updated Navbar HTML with fixed position and full width ---
+# Navbar HTML with light theme
 navbar_html = """
 <nav style="
-  background-color:#102a44; 
-  color:white; 
+  background-color:#f5f7fa; 
+  color:#102a44; 
   display:flex; 
   align-items:center; 
   padding:12px 30px; 
@@ -24,21 +24,21 @@ navbar_html = """
   box-sizing: border-box;
 ">
   <div style="display:flex; align-items:center;">
-    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
+    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #4ca1af, #c4e0e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
 
   <ul class="nav-links" style="list-style:none; display:flex; gap: 25px; margin:0; padding:0;">
-    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:none; font-weight:600;">Insights Blog</a></li>
+    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Market Updates</a></li>
+    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Coin List</a></li>
+    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer" style="color:#102a44; text-decoration:none; font-weight:600;">Insights Blog</a></li>
   </ul>
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
-      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
+      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(80%); transition:filter 0.3s ease;"></a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(80%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
-    <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
+    <select aria-label="Select Language" style="background:transparent; border:none; color:#102a44; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
       <option value="en" selected>English 🇬🇧</option>
       <option value="es">Español 🇪🇸</option>
       <option value="fr">Français 🇫🇷</option>
@@ -47,7 +47,7 @@ navbar_html = """
 </nav>
 """
 
-# Load ML Model safely
+# Load model function
 def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -57,118 +57,120 @@ def load_model():
         st.error(f"Error loading model: {e}")
         return None
 
-# Page setup
+# Streamlit page config
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
 # Show navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS Styles with background image and text styles
+# Light-themed CSS with currency background pattern
 st.markdown("""
 <style>
 body {
     padding-top: 80px;
-    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: white;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+    background-color: #f9fafb;
+    background-repeat: repeat;
+    background-size: 60px 60px;
+    color: #102a44;
     font-family: 'Poppins', Arial, sans-serif;
 }
 
 .stApp {
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: brightness(0.7);
-    padding-bottom: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 30px 40px 40px 40px;
+    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.15);
 }
 
 .title {
     text-align: center;
-    color: white !important;
-    font-size: 50px;
-    font-weight: bold;
+    color: #102a44 !important;
+    font-size: 48px;
+    font-weight: 700;
     margin-top: 15px;
 }
 
 .subtitle {
     text-align: center;
-    color: white !important;
+    color: #375a7f !important;
     font-size: 20px;
     margin-bottom: 20px;
 }
 
 .section {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: #f0f5fa;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 10px rgba(16, 42, 68, 0.1);
     margin-top: 20px;
-    color: white !important;
+    color: #102a44 !important;
 }
 
 .disclaimer {
-    background-color: #fff4e6;
-    border-left: 6px solid #ff9800;
+    background-color: #fff9e6;
+    border-left: 6px solid #ffb347;
     padding: 15px;
     border-radius: 10px;
     margin-top: 30px;
     font-size: 14px;
-    color: #333;
+    color: #463f0a;
 }
 
 .result-high {
-    color: #00c853;
+    color: #388e3c;
     font-weight: bold;
 }
 
 .result-medium {
-    color: #ffca28;
+    color: #fbc02d;
     font-weight: bold;
 }
 
 .result-low {
-    color: #d50000;
+    color: #d32f2f;
     font-weight: bold;
 }
 
 nav {
-    background-color: rgba(16, 42, 68, 0.9) !important;
+    background-color: #f5f7fa !important;
 }
 
-/* Inputs and buttons styles to be visible */
+/* Inputs and buttons styling */
 .stNumberInput>div>input {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    color: black !important;
+    background-color: #fff !important;
+    color: #102a44 !important;
+    border: 1.5px solid #cdd9e5;
+    border-radius: 6px;
+    padding: 8px;
 }
 
 .stButton>button {
-    background-color: #34e89e;
-    color: #0f3443;
-    font-weight: bold;
+    background-color: #4ca1af;
+    color: white;
+    font-weight: 600;
     border: none;
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .stButton>button:hover {
-    background-color: #0f3443;
-    color: #34e89e;
+    background-color: #397f86;
 }
 
 select {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: black;
+    background-color: #fff;
+    color: #102a44;
     font-weight: 600;
-    padding: 4px;
-    border-radius: 4px;
-    border: none;
+    padding: 5px;
+    border-radius: 6px;
+    border: 1.5px solid #cdd9e5;
 }
 
 a {
-    color: #34e89e;
+    color: #4ca1af;
     text-decoration: none;
 }
 a:hover {
@@ -181,8 +183,6 @@ a:hover {
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
-
-# List of coins (abbreviated)
 coin_names = sorted([
     'Bitcoin', 'Ethereum', 'Tether', 'BNB', 'XRP', 'Solana', 'Cardano',
     'Dogecoin', 'Shiba Inu', 'Polygon', 'Litecoin', 'Polkadot', 'Avalanche',
