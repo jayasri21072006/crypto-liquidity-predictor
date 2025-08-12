@@ -11,7 +11,7 @@ navbar_html = """
   color:white; 
   display:flex; 
   align-items:center; 
-  padding:12px 30px; /* Increased vertical padding */
+  padding:12px 30px; 
   justify-content:space-between; 
   border-radius:0 0 10px 10px; 
   box-shadow:0 4px 8px rgba(0,0,0,0.1); 
@@ -22,11 +22,7 @@ navbar_html = """
   left: 0;
   z-index: 9999;
   box-sizing: border-box;
- 
 ">
-  <!-- navbar content here -->
-</nav>
-
   <div style="display:flex; align-items:center;">
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
@@ -237,3 +233,4 @@ if st.button("Predict Liquidity"):
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
+
