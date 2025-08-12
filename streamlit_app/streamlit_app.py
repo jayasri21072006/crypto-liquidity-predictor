@@ -1,12 +1,8 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import joblib
 import pandas as pd
 import os
-
-# --- Load your navbar HTML ---
-def load_navbar():
-    with open("crypto_navbar.html", "r", encoding="utf-8") as f:
-        return f.read()
 
 # Load ML Model
 try:
@@ -18,28 +14,76 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Render Navbar
+# Load and display navbar HTML
+def load_navbar():
+    with open("crypto.html", "r", encoding="utf-8") as f:
+        return f.read()
+
 navbar_html = load_navbar()
-st.components.v1.html(navbar_html, height=110, scrolling=False)
+components.html(navbar_html, height=110, scrolling=False)
 
-# Add some spacing after navbar to separate content
-st.markdown("<br><br>", unsafe_allow_html=True)
+# Custom CSS
+st.markdown("""
+    <style>
+    .title {
+        text-align: center;
+        color: #0044cc;
+        font-size: 50px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .subtitle {
+        text-align: center;
+        color: #333;
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    .section {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+    .disclaimer {
+        background-color: #fff4e6;
+        border-left: 6px solid #ff9800;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 30px;
+        font-size: 18px;
+    }
+    .result-high {
+        color: #00c853;
+        font-weight: bold;
+    }
+    .result-medium {
+        color: #ffca28;
+        font-weight: bold;
+    }
+    .result-low {
+        color: #d50000;
+        font-weight: bold;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Title & Subtitle with spacing and styling
-st.markdown(
-    "<div style='margin-bottom: 10px; font-size: 24px; font-weight: 600;'>Crypto Liquidity Predictor</div>", 
-    unsafe_allow_html=True
-)
-st.markdown(
-    "<div style='margin-bottom: 30px; font-size: 16px;'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", 
-    unsafe_allow_html=True
-)
+# Title & Subtitle without emoji
+st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # Initialize session state for inputs on first run or demo load
-for key in ["open_price", "high_price", "low_price", "close_price", "volume"]:
-    if key not in st.session_state:
-        st.session_state[key] = 0.0
+if "open_price" not in st.session_state:
+    st.session_state.open_price = 0.0
+if "high_price" not in st.session_state:
+    st.session_state.high_price = 0.0
+if "low_price" not in st.session_state:
+    st.session_state.low_price = 0.0
+if "close_price" not in st.session_state:
+    st.session_state.close_price = 0.0
+if "volume" not in st.session_state:
+    st.session_state.volume = 0.0
 
 # Demo data function
 def load_demo_data():
@@ -125,32 +169,6 @@ def predict_price_trend(open_price, close_price):
     else:
         return "No Clear Price Movement"
 
-# Custom CSS for results and disclaimer
-st.markdown("""
-    <style>
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-    }
-    .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 30px;
-        font-size: 18px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 # Disclaimer
 st.markdown("""
 <div class="disclaimer">
@@ -172,7 +190,7 @@ if st.button("Predict Liquidity"):
             trend = predict_price_trend(open_price, close_price)
 
             st.markdown(f"""
-            <div style='text-align:center; margin-top: 20px;'>
+            <div class='section' style='text-align:center'>
                 <h2>Prediction Result</h2>
                 <p><strong>Liquidity Score:</strong> {score:.2f}</p>
                 <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
