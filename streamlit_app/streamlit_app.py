@@ -4,12 +4,11 @@ import joblib
 import pandas as pd
 import os
 
-# --- Navbar HTML as a string ---
+# --- Navbar HTML as a string (tagline removed) ---
 navbar_html = """
 <nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif;">
   <div style="display:flex; align-items:center;">
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
-    <div style="font-weight:300; font-size:14px; color:#a0b9c7; margin-left:8px; font-style:italic;">Your #1 source for crypto insights</div>
   </div>
 
   <ul style="list-style:none; display:flex; margin:0; padding:0;">
@@ -48,7 +47,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Show navbar
 components.html(navbar_html, height=90, scrolling=False)
 
-# Custom CSS for page styling
+# Custom CSS for page
 st.markdown("""
 <style>
 .title {
@@ -57,7 +56,6 @@ st.markdown("""
     font-size: 50px;
     font-weight: bold;
     margin-top: 15px;
-    margin-bottom: 0;
 }
 .subtitle {
     text-align: center;
@@ -92,11 +90,6 @@ st.markdown("""
     color: #d50000;
     font-weight: bold;
 }
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -105,7 +98,7 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state variables for inputs (persistent)
+# Initialize session state variables
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -121,7 +114,7 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# Input fields in two columns
+# Inputs in two columns
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f",
@@ -153,7 +146,7 @@ price_df = pd.DataFrame({
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input for model (add your real features here)
+# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -161,16 +154,16 @@ input_data = pd.DataFrame({
     'Close': [close_price],
     'Volume': [volume],
     'Market Cap': [close_price * volume],
-    'SMA_5': [0],   # Placeholder: replace with actual calculations if needed
-    'EMA_12': [0],  # Placeholder
-    'RSI': [0],     # Placeholder
-    'MACD': [0]     # Placeholder
+    'SMA_5': [0],
+    'EMA_12': [0],
+    'RSI': [0],
+    'MACD': [0]
 })
 
 # Load model
 model = load_model()
 
-# Liquidity classifier with colored tags
+# Liquidity classifier
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -182,13 +175,13 @@ def classify_liquidity(score):
 # Price trend prediction
 def predict_price_trend(open_p, close_p):
     if close_p > open_p:
-        return "Price may go Up 📈"
+        return "Price may go Up"
     elif close_p < open_p:
-        return "Price may go Down 📉"
+        return "Price may go Down"
     else:
-        return "No Clear Price Movement ➖"
+        return "No Clear Price Movement"
 
-# Disclaimer box
+# Disclaimer
 st.markdown("""
 <div class="disclaimer">
     <strong>Disclaimer:</strong><br>
@@ -199,13 +192,11 @@ st.markdown("""
 
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Predict button is disabled until disclaimer is accepted
-predict_button = st.button("Predict Liquidity", disabled=not agree)
-
-if predict_button:
+# Prediction button
+if st.button("Predict Liquidity"):
     if not model:
         st.error("Model not loaded. Prediction unavailable.")
-    else:
+    elif agree:
         try:
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
@@ -221,6 +212,8 @@ if predict_button:
             """, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Prediction failed: {e}")
+    else:
+        st.warning("Please accept the disclaimer to proceed.")
 
 # Footer
 st.markdown("""
