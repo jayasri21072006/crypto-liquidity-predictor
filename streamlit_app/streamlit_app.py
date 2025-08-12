@@ -16,7 +16,7 @@ navbar_html = """
   border-radius:0 0 10px 10px; 
   box-shadow:0 4px 8px rgba(0,0,0,0.1); 
   font-family: 'Poppins', Arial, sans-serif;
-  width: 100vw;
+  width: 200vw;
   position: fixed;
   top: 0;
   left: 0;
