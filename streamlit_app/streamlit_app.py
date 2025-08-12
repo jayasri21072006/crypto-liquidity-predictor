@@ -11,7 +11,7 @@ navbar_html = """
   color:white; 
   display:flex; 
   align-items:center; 
-  padding:24px 30px; /* Increased vertical padding */
+  padding:12px 30px; /* Increased vertical padding */
   justify-content:space-between; 
   border-radius:0 0 10px 10px; 
   box-shadow:0 4px 8px rgba(0,0,0,0.1); 
@@ -22,7 +22,7 @@ navbar_html = """
   left: 0;
   z-index: 9999;
   box-sizing: border-box;
-  height: 120px; /* Explicit height */
+ 
 ">
   <!-- navbar content here -->
 </nav>
