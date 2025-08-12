@@ -235,9 +235,9 @@ if st.button("Predict Liquidity"):
     else:
         st.warning("Please accept the disclaimer to proceed.")
 
-# Footer sentence added here
+# Added footer text exactly as requested
 st.markdown("""
-<p style='text-align:center; font-size:14px; color:grey; margin-top:40px;'>
+<p style='text-align:center; font-size:14px; color:grey;'>
     Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
