@@ -64,24 +64,15 @@ st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_a
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# 🧪 Demo Data Button
-if st.button("🧪 Use Demo Data"):
-    st.session_state["open_price"] = 100
-    st.session_state["high_price"] = 120
-    st.session_state["low_price"] = 90
-    st.session_state["close_price"] = 110
-    st.session_state["volume"] = 5000
-    st.experimental_rerun()
-
 # ✏️ User Inputs
 col1, col2 = st.columns(2)
 with col1:
-    open_price = st.number_input('🔓 Open Price', value=st.session_state.get("open_price", 0.0), format="%.4f")
-    high_price = st.number_input('🔺 High Price', value=st.session_state.get("high_price", 0.0), format="%.4f")
-    low_price = st.number_input('🔻 Low Price', value=st.session_state.get("low_price", 0.0), format="%.4f")
+    open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
+    high_price = st.number_input('🔺 High Price', value=0.0, format="%.4f")
+    low_price = st.number_input('🔻 Low Price', value=0.0, format="%.4f")
 with col2:
-    close_price = st.number_input('🔒 Close Price', value=st.session_state.get("close_price", 0.0), format="%.4f")
-    volume = st.number_input('📦 Volume', value=st.session_state.get("volume", 0.0), format="%.4f")
+    close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
+    volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
 
 # 💰 Market Cap
 market_cap = close_price * volume
@@ -165,10 +156,10 @@ if st.button("🚀 Predict Liquidity"):
     else:
         st.warning("⚠️ Please accept the disclaimer to proceed.")
 
-# 📌 Footer
+# 📌 Footer with Coinsight ML team name
 st.markdown("""
 <hr>
 <p style='text-align:center; font-size:14px; color:grey;'>
-    Made with ❤️ by YourName · Version 1.0 · Not financial advice
+    Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
