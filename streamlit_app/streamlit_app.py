@@ -2,206 +2,77 @@ import streamlit as st
 import streamlit.components.v1 as components
 import joblib
 import pandas as pd
+import os
 
 # --- Updated Navbar HTML with fixed position and full width ---
 navbar_html = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CryptoPredictions Navbar</title>
-  
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
-  
-  <style>
-    /* Reset */
-    body {
-      margin: 0;
-      font-family: 'Poppins', Arial, sans-serif;
-      background-color: #f4f7fa;
-    }
+<nav style="
+  background-color:#102a44; 
+  color:white; 
+  display:flex; 
+  align-items:center; 
+  padding:12px 30px; /* Increased vertical padding */
+  justify-content:space-between; 
+  border-radius:0 0 10px 10px; 
+  box-shadow:0 4px 8px rgba(0,0,0,0.1); 
+  font-family: 'Poppins', Arial, sans-serif;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-sizing: border-box;
+ 
+">
+  <!-- navbar content here -->
+</nav>
 
-    nav {
-      background-color: #102a44; /* slightly different dark blue */
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 12px 30px;
-      justify-content: space-between;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      z-index: 9999;
-      box-sizing: border-box;
-    }
-
-    .logo {
-      font-weight: 700;
-      font-size: 26px;
-      background: linear-gradient(90deg, #34e89e, #0f3443);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      cursor: default;
-      user-select: none;
-    }
-
-    .tagline {
-      font-weight: 300;
-      font-size: 14px;
-      color: #a0b9c7;
-      margin-left: 8px;
-      font-style: italic;
-    }
-
-    ul.nav-links {
-      list-style: none;
-      display: flex;
-      margin: 0;
-      padding: 0;
-    }
-
-    ul.nav-links li {
-      margin: 0 20px;
-    }
-
-    ul.nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      transition: color 0.3s ease;
-    }
-
-    ul.nav-links li a:hover {
-      color: #34e89e; /* turquoise accent */
-      text-decoration: underline;
-    }
-
-    .right-section {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .social-icons a img {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      filter: brightness(100%);
-      transition: filter 0.3s ease;
-    }
-
-    .social-icons a img:hover {
-      filter: brightness(130%);
-    }
-
-    .language-select {
-      background: transparent;
-      border: none;
-      color: white;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-
-    .language-select:hover, .language-select:focus {
-      background-color: rgba(255 255 255 / 0.2);
-      outline: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-        gap: 10px;
-      }
-
-      ul.nav-links {
-        flex-wrap: wrap;
-        gap: 15px;
-      }
-
-      .right-section {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 15px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<nav>
   <div style="display:flex; align-items:center;">
-    <div class="logo">CryptoPredictions</div>
-    <div class="tagline">Your #1 source for crypto insights</div>
+    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
 
-  <ul class="nav-links">
-    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a></li>
+  <ul style="list-style:none; display:flex; margin:0; padding:0;">
+    <li style="margin: 0 20px;"><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Market Updates</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Coin List</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Insights Blog</a></li>
   </ul>
 
-  <div class="right-section">
-    <div class="social-icons">
-      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" />
-      </a>
-      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" />
-      </a>
+  <div style="display:flex; align-items:center; gap:20px;">
+    <div>
+      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
-    <select class="language-select" aria-label="Select Language">
+    <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
       <option value="en" selected>English 🇬🇧</option>
       <option value="es">Español 🇪🇸</option>
       <option value="fr">Français 🇫🇷</option>
     </select>
   </div>
 </nav>
-
-</body>
-</html>
 """
 
-# Set page config first
-st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
-
-# Render the navbar component once at the top of your Streamlit app
-components.html(navbar_html, height=80, scrolling=False)
-
-# Add padding to body in Streamlit so your content doesn't go behind the fixed navbar
-st.markdown("""
-<style>
-    /* Push content down so navbar doesn't cover it */
-    .main > div {
-        padding-top: 80px !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Load ML Model safely with relative path (no __file__)
+# Load ML Model safely
 def load_model():
     try:
-        model_path = 'crypto_liquidity_model.pkl'  # Ensure this file is in your app folder
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
         return joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
 
-# Title & subtitle styles
+# Page setup
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
+
+# Show navbar
+components.html(navbar_html, height=80, scrolling=False)
+
+# Add padding to body to prevent overlap with fixed navbar
 st.markdown("""
 <style>
+body {
+    padding-top: 80px;
+}
 .title {
     text-align: center;
     color: #0044cc;
@@ -245,6 +116,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Title & subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -311,7 +183,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# Load model once here
+# Load model
 model = load_model()
 
 # Liquidity classifier
