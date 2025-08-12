@@ -235,7 +235,7 @@ if st.button("Predict Liquidity"):
             st.markdown(f"""
             <div class='section' style='text-align:center'>
                 <h2>Prediction Result</h2>
-                <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
+               
                 <p><strong>Liquidity Score:</strong> {score:.2f}</p>
                 <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
                 <p><strong>Price Trend:</strong> {trend}</p>
