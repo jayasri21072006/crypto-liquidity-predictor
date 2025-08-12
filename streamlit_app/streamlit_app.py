@@ -4,89 +4,102 @@ import joblib
 import pandas as pd
 import os
 
-# Function to load navbar HTML safely with absolute path
-def load_navbar():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    navbar_path = os.path.join(script_dir, "crypto.html")
-    try:
-        with open(navbar_path, "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        st.warning("Navbar HTML file not found. Skipping navbar.")
-        return "<!-- Navbar file missing -->"
+# --- Navbar HTML as a string ---
+navbar_html = """
+<nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif;">
+  <div style="display:flex; align-items:center;">
+    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
+    <div style="font-weight:300; font-size:14px; color:#a0b9c7; margin-left:8px; font-style:italic;">Your #1 source for crypto insights</div>
+  </div>
 
-# Load model safely with absolute path
+  <ul style="list-style:none; display:flex; margin:0; padding:0;">
+    <li style="margin: 0 20px;"><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Market Updates</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Coin List</a></li>
+    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Insights Blog</a></li>
+  </ul>
+
+  <div style="display:flex; align-items:center; gap:20px;">
+    <div>
+      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+    </div>
+    <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
+      <option value="en" selected>English 🇬🇧</option>
+      <option value="es">Español 🇪🇸</option>
+      <option value="fr">Français 🇫🇷</option>
+    </select>
+  </div>
+</nav>
+"""
+
+# Load ML Model safely
 def load_model():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
     try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
         return joblib.load(model_path)
     except Exception as e:
-        st.error(f"Error loading the model: {e}")
+        st.error(f"Error loading model: {e}")
         return None
 
 # Page setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Load and show navbar
-navbar_html = load_navbar()
-components.html(navbar_html, height=110, scrolling=False)
+# Show navbar
+components.html(navbar_html, height=90, scrolling=False)
 
-# Load model
-model = load_model()
-
-# Your custom CSS
+# Custom CSS for page
 st.markdown("""
-    <style>
-    .title {
-        text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    .subtitle {
-        text-align: center;
-        color: #333;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    .section {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
-    .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 30px;
-        font-size: 18px;
-    }
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-    }
-    </style>
+<style>
+.title {
+    text-align: center;
+    color: #0044cc;
+    font-size: 50px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.subtitle {
+    text-align: center;
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.section {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+.disclaimer {
+    background-color: #fff4e6;
+    border-left: 6px solid #ff9800;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 30px;
+    font-size: 18px;
+}
+.result-high {
+    color: #00c853;
+    font-weight: bold;
+}
+.result-medium {
+    color: #ffca28;
+    font-weight: bold;
+}
+.result-low {
+    color: #d50000;
+    font-weight: bold;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# Title & Subtitle
+# Title & subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state for inputs if not set
+# Initialize session state variables
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -102,29 +115,30 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# Input columns
+# Inputs in two columns
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f",
-                                help="The price at which the cryptocurrency opened during the trading period.")
+                                help="Price at which crypto opened during trading period.")
     high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f",
-                                help="The highest price the cryptocurrency reached during the trading period.")
+                                help="Highest price crypto reached during trading period.")
     low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f",
-                               help="The lowest price the cryptocurrency reached during the trading period.")
-    # Market Cap under Low Price
+                               help="Lowest price crypto reached during trading period.")
+
+    # Market Cap auto-calculation under low price
     market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
-        <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
-            Auto-calculated Market Cap:<br>
-            <span style="color:#0044cc;">${market_cap:,.2f}</span>
-        </div>
+    <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
+        Auto-calculated Market Cap:<br>
+        <span style="color:#0044cc;">${market_cap:,.2f}</span>
+    </div>
     """, unsafe_allow_html=True)
 
 with col2:
     close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f",
-                                 help="The price at which the cryptocurrency closed during the trading period.")
+                                 help="Price at which crypto closed during trading period.")
     volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f",
-                            help="The total amount of cryptocurrency traded during the trading period.")
+                            help="Total amount of crypto traded during trading period.")
 
 # Price overview chart
 price_df = pd.DataFrame({
@@ -147,6 +161,10 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
+# Load model
+model = load_model()
+
+# Liquidity classifier
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -155,10 +173,11 @@ def classify_liquidity(score):
     else:
         return "<span class='result-high'>High</span>"
 
-def predict_price_trend(open_price, close_price):
-    if close_price > open_price:
+# Price trend prediction
+def predict_price_trend(open_p, close_p):
+    if close_p > open_p:
         return "Price may go Up"
-    elif close_price < open_price:
+    elif close_p < open_p:
         return "Price may go Down"
     else:
         return "No Clear Price Movement"
@@ -174,6 +193,7 @@ st.markdown("""
 
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
+# Prediction button
 if st.button("Predict Liquidity"):
     if not model:
         st.error("Model not loaded. Prediction unavailable.")
@@ -191,7 +211,6 @@ if st.button("Predict Liquidity"):
                 <p><strong>Price Trend:</strong> {trend}</p>
             </div>
             """, unsafe_allow_html=True)
-
         except Exception as e:
             st.error(f"Prediction failed: {e}")
     else:
