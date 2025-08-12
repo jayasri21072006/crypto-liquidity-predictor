@@ -27,11 +27,12 @@ navbar_html = """
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
 
-  <ul style="list-style:none; display:flex; margin:0; padding:0;">
-    <li style="margin: 0 20px;"><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Market Updates</a></li>
-    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Coin List</a></li>
-    <li style="margin: 0 20px;"><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600; font-size:16px;">Insights Blog</a></li>
+  ul class="nav-links">
+    <li><a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a></li>
+    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a></li>
+    <li><a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a></li>
   </ul>
+
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
