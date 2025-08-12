@@ -59,12 +59,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🪙 Title & Subtitle
-st.markdown("<div class='title'>🪙 Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
+# Title & Subtitle without emoji
+st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ✏️ User Inputs
+# User Inputs
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('🔓 Open Price', value=0.0, format="%.4f")
@@ -74,7 +74,7 @@ with col2:
     close_price = st.number_input('🔒 Close Price', value=0.0, format="%.4f")
     volume = st.number_input('📦 Volume', value=0.0, format="%.4f")
 
-# 💰 Market Cap
+# Market Cap calculation
 market_cap = close_price * volume
 
 st.markdown(f"""
@@ -83,14 +83,14 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 📉 Line Chart using Streamlit
+# Price Overview Chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### 📈 Price Overview")
 st.line_chart(price_df)
 
-# 🧠 Model Input Data
+# Prepare input data for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -104,7 +104,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# 🔍 Classification Logic
+# Classification logic
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>🟥 Low</span>"
@@ -121,7 +121,7 @@ def predict_price_trend(open_price, close_price):
     else:
         return "❓ No Clear Price Movement"
 
-# ⚠️ Disclaimer
+# Disclaimer
 st.markdown("""
 <div class="disclaimer">
     <strong>⚠️ Disclaimer:</strong><br>
@@ -130,10 +130,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ✅ Accept Terms
+# Accept disclaimer checkbox
 agree = st.checkbox("✅ I acknowledge and accept the disclaimer above.")
 
-# 🚀 Predict
+# Prediction button
 if st.button("🚀 Predict Liquidity"):
     if agree:
         try:
@@ -156,10 +156,11 @@ if st.button("🚀 Predict Liquidity"):
     else:
         st.warning("⚠️ Please accept the disclaimer to proceed.")
 
-# 📌 Footer with Coinsight ML team name
+# Footer with Coinsight ML team name
 st.markdown("""
 <hr>
 <p style='text-align:center; font-size:14px; color:grey;'>
     Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
+
