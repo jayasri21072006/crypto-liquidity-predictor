@@ -21,7 +21,7 @@ navbar_html = """
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
       <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
-      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
     <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
       <option value="en" selected>English 🇬🇧</option>
@@ -48,7 +48,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Show navbar
 components.html(navbar_html, height=90, scrolling=False)
 
-# Custom CSS for page
+# Custom CSS for page styling
 st.markdown("""
 <style>
 .title {
@@ -57,6 +57,7 @@ st.markdown("""
     font-size: 50px;
     font-weight: bold;
     margin-top: 15px;
+    margin-bottom: 0;
 }
 .subtitle {
     text-align: center;
@@ -91,6 +92,11 @@ st.markdown("""
     color: #d50000;
     font-weight: bold;
 }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -99,7 +105,7 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state variables
+# Initialize session state variables for inputs (persistent)
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -115,7 +121,7 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# Inputs in two columns
+# Input fields in two columns
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f",
@@ -147,7 +153,7 @@ price_df = pd.DataFrame({
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input for model
+# Prepare input for model (add your real features here)
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -155,16 +161,16 @@ input_data = pd.DataFrame({
     'Close': [close_price],
     'Volume': [volume],
     'Market Cap': [close_price * volume],
-    'SMA_5': [0],
-    'EMA_12': [0],
-    'RSI': [0],
-    'MACD': [0]
+    'SMA_5': [0],   # Placeholder: replace with actual calculations if needed
+    'EMA_12': [0],  # Placeholder
+    'RSI': [0],     # Placeholder
+    'MACD': [0]     # Placeholder
 })
 
 # Load model
 model = load_model()
 
-# Liquidity classifier
+# Liquidity classifier with colored tags
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -176,13 +182,13 @@ def classify_liquidity(score):
 # Price trend prediction
 def predict_price_trend(open_p, close_p):
     if close_p > open_p:
-        return "Price may go Up"
+        return "Price may go Up 📈"
     elif close_p < open_p:
-        return "Price may go Down"
+        return "Price may go Down 📉"
     else:
-        return "No Clear Price Movement"
+        return "No Clear Price Movement ➖"
 
-# Disclaimer
+# Disclaimer box
 st.markdown("""
 <div class="disclaimer">
     <strong>Disclaimer:</strong><br>
@@ -193,11 +199,13 @@ st.markdown("""
 
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Prediction button
-if st.button("Predict Liquidity"):
+# Predict button is disabled until disclaimer is accepted
+predict_button = st.button("Predict Liquidity", disabled=not agree)
+
+if predict_button:
     if not model:
         st.error("Model not loaded. Prediction unavailable.")
-    elif agree:
+    else:
         try:
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
@@ -213,8 +221,6 @@ if st.button("Predict Liquidity"):
             """, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Prediction failed: {e}")
-    else:
-        st.warning("Please accept the disclaimer to proceed.")
 
 # Footer
 st.markdown("""
