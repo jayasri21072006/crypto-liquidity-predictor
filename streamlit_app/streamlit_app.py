@@ -4,9 +4,25 @@ import joblib
 import pandas as pd
 import os
 
-# --- Navbar HTML as a string (tagline removed) ---
+# --- Updated Navbar HTML with fixed position and full width ---
 navbar_html = """
-<nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif;">
+<nav style="
+  background-color:#102a44; 
+  color:white; 
+  display:flex; 
+  align-items:center; 
+  padding:12px 30px; 
+  justify-content:space-between; 
+  border-radius:0 0 10px 10px; 
+  box-shadow:0 4px 8px rgba(0,0,0,0.1); 
+  font-family: 'Poppins', Arial, sans-serif;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-sizing: border-box;
+">
   <div style="display:flex; align-items:center;">
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
@@ -45,11 +61,14 @@ def load_model():
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
 # Show navbar
-components.html(navbar_html, height=90, scrolling=False)
+components.html(navbar_html, height=80, scrolling=False)
 
-# Custom CSS for page
+# Add padding to body to prevent overlap with fixed navbar
 st.markdown("""
 <style>
+body {
+    padding-top: 80px;
+}
 .title {
     text-align: center;
     color: #0044cc;
@@ -215,10 +234,3 @@ if st.button("Predict Liquidity"):
     else:
         st.warning("Please accept the disclaimer to proceed.")
 
-# Footer
-st.markdown("""
-<hr>
-<p style='text-align:center; font-size:14px; color:grey;'>
-    Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
-</p>
-""", unsafe_allow_html=True)
