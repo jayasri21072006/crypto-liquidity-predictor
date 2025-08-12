@@ -63,51 +63,116 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Show navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS Styles
+# CSS Styles with background image and text styles
 st.markdown("""
 <style>
 body {
     padding-top: 80px;
+    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white;
+    font-family: 'Poppins', Arial, sans-serif;
 }
+
+.stApp {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: brightness(0.7);
+    padding-bottom: 40px;
+}
+
 .title {
     text-align: center;
-    color: #0044cc;
+    color: white !important;
     font-size: 50px;
     font-weight: bold;
     margin-top: 15px;
 }
+
 .subtitle {
     text-align: center;
-    color: #333;
+    color: white !important;
     font-size: 20px;
     margin-bottom: 20px;
 }
+
 .section {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
     margin-top: 20px;
+    color: white !important;
 }
+
 .disclaimer {
     background-color: #fff4e6;
     border-left: 6px solid #ff9800;
     padding: 15px;
     border-radius: 10px;
     margin-top: 30px;
-    font-size: 18px;
+    font-size: 14px;
+    color: #333;
 }
+
 .result-high {
     color: #00c853;
     font-weight: bold;
 }
+
 .result-medium {
     color: #ffca28;
     font-weight: bold;
 }
+
 .result-low {
     color: #d50000;
     font-weight: bold;
+}
+
+nav {
+    background-color: rgba(16, 42, 68, 0.9) !important;
+}
+
+/* Inputs and buttons styles to be visible */
+.stNumberInput>div>input {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: black !important;
+}
+
+.stButton>button {
+    background-color: #34e89e;
+    color: #0f3443;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stButton>button:hover {
+    background-color: #0f3443;
+    color: #34e89e;
+}
+
+select {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    font-weight: 600;
+    padding: 4px;
+    border-radius: 4px;
+    border: none;
+}
+
+a {
+    color: #34e89e;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -117,12 +182,11 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# List of coins (abbreviated for brevity, but you can include the full list)
+# List of coins (abbreviated)
 coin_names = sorted([
     'Bitcoin', 'Ethereum', 'Tether', 'BNB', 'XRP', 'Solana', 'Cardano',
     'Dogecoin', 'Shiba Inu', 'Polygon', 'Litecoin', 'Polkadot', 'Avalanche',
     'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
-    # Add the full list here as needed
 ])
 
 # Optional Coin Name input
@@ -159,9 +223,9 @@ with col1:
     # Market Cap auto-calculation under low price
     market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
-    <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
+    <div style="margin-top: 10px; font-weight: bold; font-size: 16px; color:white;">
         Auto-calculated Market Cap:<br>
-        <span style="color:#0044cc;">${market_cap:,.2f}</span>
+        <span style="color:#34e89e;">${market_cap:,.2f}</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -213,7 +277,7 @@ def predict_price_trend(open_p, close_p):
 
 # Disclaimer
 st.markdown("""
-<div class="disclaimer" style="font-size: 14px;">
+<div class="disclaimer">
     <strong>Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
     Predictions are not guaranteed for any particular cryptocurrency or token.<br>
