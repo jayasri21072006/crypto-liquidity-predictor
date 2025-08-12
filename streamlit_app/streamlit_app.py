@@ -13,58 +13,20 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Custom CSS
-st.markdown("""
-    <style>
-    .title {
-        text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    .subtitle {
-        text-align: center;
-        color: #333;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    .section {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
-    .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 30px;
-        font-size: 18px;
-    }
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Inject external HTML (CSS + navbar)
+html_file_path = os.path.join(os.path.dirname(__file__), 'crypto.html')
+try:
+    with open(html_file_path, 'r') as f:
+        st.markdown(f.read(), unsafe_allow_html=True)
+except Exception as e:
+    st.error(f"Error loading HTML file: {e}")
 
-# Title & Subtitle without emoji
+# Title & Subtitle (can also go in HTML if preferred)
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state for inputs on first run or demo load
+# Initialize session state
 if "open_price" not in st.session_state:
     st.session_state.open_price = 0.0
 if "high_price" not in st.session_state:
@@ -88,48 +50,32 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# User Inputs with Market Cap shown below Low Price
+# User Inputs
 col1, col2 = st.columns(2)
 with col1:
-    open_price = st.number_input(
-        'Open Price', value=st.session_state.open_price, format="%.4f",
-        help="The price at which the cryptocurrency opened during the trading period."
-    )
-    high_price = st.number_input(
-        'High Price', value=st.session_state.high_price, format="%.4f",
-        help="The highest price the cryptocurrency reached during the trading period."
-    )
-    low_price = st.number_input(
-        'Low Price', value=st.session_state.low_price, format="%.4f",
-        help="The lowest price the cryptocurrency reached during the trading period."
-    )
+    open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
+    high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f")
+    low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f")
 with col2:
-    close_price = st.number_input(
-        'Close Price', value=st.session_state.close_price, format="%.4f",
-        help="The price at which the cryptocurrency closed during the trading period."
-    )
-    volume = st.number_input(
-        'Volume', value=st.session_state.volume, format="%.4f",
-        help="The total amount of cryptocurrency traded during the trading period."
-    )
+    close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
+    volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
+# Calculate Market Cap
 market_cap = close_price * volume
-
-# Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
 st.markdown(f"""
     <div style="margin-top: 8px; font-weight: bold;">
         Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
     </div>
 """, unsafe_allow_html=True)
 
-# Price Overview Chart
+# Line Chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input data for model
+# Prepare Input Data
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -143,7 +89,7 @@ input_data = pd.DataFrame({
     'MACD': [0]
 })
 
-# Classification logic without emojis
+# Liquidity Classification
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -152,6 +98,7 @@ def classify_liquidity(score):
     else:
         return "<span class='result-high'>High</span>"
 
+# Trend Prediction
 def predict_price_trend(open_price, close_price):
     if close_price > open_price:
         return "Price may go Up"
@@ -169,10 +116,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Accept disclaimer checkbox
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Prediction button
+# Predict Button
 if st.button("Predict Liquidity"):
     if agree:
         try:
@@ -188,13 +134,12 @@ if st.button("Predict Liquidity"):
                 <p><strong>Price Trend:</strong> {trend}</p>
             </div>
             """, unsafe_allow_html=True)
-
         except Exception as e:
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
 
-# Footer with Coinsight ML team name
+# Footer
 st.markdown("""
 <hr>
 <p style='text-align:center; font-size:14px; color:grey;'>
