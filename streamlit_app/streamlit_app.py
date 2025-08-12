@@ -11,64 +11,123 @@ except Exception as e:
     st.error(f"Error loading the model: {e}")
 
 # Page Setup
-st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="wide")
 
-# Custom CSS
+# --- Custom CSS mimicking your site style ---
 st.markdown("""
-    <style>
-    .title {
-        text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    .subtitle {
-        text-align: center;
-        color: #333;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    .section {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
-    .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 30px;
-        font-size: 18px;
-    }
-    .result-high {
-        color: #00c853;
-        font-weight: bold;
-    }
-    .result-medium {
-        color: #ffca28;
-        font-weight: bold;
-    }
-    .result-low {
-        color: #d50000;
-        font-weight: bold;
-    }
-    </style>
+<style>
+/* Body background */
+body {
+    background-color: #0e1a3d;
+    color: #f0f0f0;
+}
+
+/* Header */
+header {
+    background-color: #172a6b;
+    padding: 15px 30px;
+    border-bottom: 3px solid #5c85d6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Title */
+.title {
+    font-size: 38px;
+    font-weight: 700;
+    color: #5c85d6;
+    margin-bottom: 5px;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 18px;
+    color: #cfd9f8;
+    margin-bottom: 20px;
+}
+
+/* Button style */
+.stButton > button {
+    background-color: #3358f4;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 25px;
+    transition: background-color 0.3s ease;
+}
+.stButton > button:hover {
+    background-color: #527bff;
+}
+
+/* Input boxes */
+div[data-baseweb="select"] > div {
+    background-color: #1c2a6f !important;
+    color: white !important;
+}
+input[type=number] {
+    background-color: #1c2a6f !important;
+    color: white !important;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+/* Cards and sections */
+.section {
+    background-color: #172a6b;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Result styles */
+.result-high {
+    color: #4caf50;
+    font-weight: 700;
+}
+.result-medium {
+    color: #ffeb3b;
+    font-weight: 700;
+}
+.result-low {
+    color: #f44336;
+    font-weight: 700;
+}
+
+/* Disclaimer box */
+.disclaimer {
+    background-color: #223466;
+    border-left: 6px solid #5c85d6;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    margin: 30px 0;
+    color: #b0b9d7;
+}
+
+/* Market cap info */
+.market-cap {
+    font-weight: 600;
+    color: #a3c5ff;
+    margin-top: 12px;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# Title & Subtitle without emoji
-st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+# Header (custom, since Streamlit doesn't have a fixed header)
+st.markdown("""
+<header>
+    <div class="title">CryptoPredictions.com</div>
+    <div class="subtitle">Predict Liquidity Levels with AI/ML — Powered by Coinsight ML Team</div>
+</header>
+""", unsafe_allow_html=True)
 
-# Initialize session state for demo data loading
+# Main app content in a centered container
+st.markdown("<div class='section'>", unsafe_allow_html=True)
+
+# Demo data flag
 if 'demo_loaded' not in st.session_state:
     st.session_state.demo_loaded = False
 
-# Demo data example (Bitcoin sample prices)
 demo_data = {
     "Open Price": 29400.1234,
     "High Price": 29750.5678,
@@ -81,55 +140,27 @@ demo_data = {
 if st.button("Load Demo Data for Bitcoin"):
     st.session_state.demo_loaded = True
 
-# Set default values based on demo data or zero
-default_open = demo_data["Open Price"] if st.session_state.demo_loaded else 0.0
-default_high = demo_data["High Price"] if st.session_state.demo_loaded else 0.0
-default_low = demo_data["Low Price"] if st.session_state.demo_loaded else 0.0
-default_close = demo_data["Close Price"] if st.session_state.demo_loaded else 0.0
-default_volume = demo_data["Volume"] if st.session_state.demo_loaded else 0.0
+# Input defaults
+def_val = lambda key: demo_data[key] if st.session_state.demo_loaded else 0.0
 
-# User Inputs with Market Cap shown below Low Price
-col1, col2 = st.columns(2)
-with col1:
-    open_price = st.number_input(
-        'Open Price', value=default_open, format="%.4f",
-        help="The price at which the cryptocurrency opened during the trading period."
-    )
-    high_price = st.number_input(
-        'High Price', value=default_high, format="%.4f",
-        help="The highest price the cryptocurrency reached during the trading period."
-    )
-    low_price = st.number_input(
-        'Low Price', value=default_low, format="%.4f",
-        help="The lowest price the cryptocurrency reached during the trading period."
-    )
-with col2:
-    close_price = st.number_input(
-        'Close Price', value=default_close, format="%.4f",
-        help="The price at which the cryptocurrency closed during the trading period."
-    )
-    volume = st.number_input(
-        'Volume', value=default_volume, format="%.4f",
-        help="The total amount of cryptocurrency traded during the trading period."
-    )
+open_price = st.number_input("Open Price", value=def_val("Open Price"), format="%.4f")
+high_price = st.number_input("High Price", value=def_val("High Price"), format="%.4f")
+low_price = st.number_input("Low Price", value=def_val("Low Price"), format="%.4f")
+close_price = st.number_input("Close Price", value=def_val("Close Price"), format="%.4f")
+volume = st.number_input("Volume", value=def_val("Volume"), format="%.4f")
 
 market_cap = close_price * volume
 
-# Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
-st.markdown(f"""
-    <div style="margin-top: 8px; font-weight: bold;">
-        Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div class='market-cap'>Auto-calculated Market Cap: ${market_cap:,.2f}</div>", unsafe_allow_html=True)
 
-# Price Overview Chart
+# Price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input data for model
+# Prepare input data
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -137,13 +168,13 @@ input_data = pd.DataFrame({
     'Close': [close_price],
     'Volume': [volume],
     'Market Cap': [market_cap],
+    # Placeholder indicators - replace with your real data or calculations
     'SMA_5': [0],
     'EMA_12': [0],
     'RSI': [0],
     'MACD': [0]
 })
 
-# Classification logic without emojis
 def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
@@ -169,35 +200,33 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Accept disclaimer checkbox
 agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Prediction button
 if st.button("Predict Liquidity"):
     if agree:
         try:
             score = model.predict(input_data)[0]
             liquidity_level = classify_liquidity(score)
             trend = predict_price_trend(open_price, close_price)
-
             st.markdown(f"""
-            <div class='section' style='text-align:center'>
+            <div style="text-align:center; margin-top: 30px;">
                 <h2>Prediction Result</h2>
                 <p><strong>Liquidity Score:</strong> {score:.2f}</p>
                 <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
                 <p><strong>Price Trend:</strong> {trend}</p>
             </div>
             """, unsafe_allow_html=True)
-
         except Exception as e:
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
 
-# Footer with Coinsight ML team name
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Footer
 st.markdown("""
-<hr>
-<p style='text-align:center; font-size:14px; color:grey;'>
+<hr style="border-color:#3358f4;">
+<p style='text-align:center; font-size:14px; color:#a3b5ff; margin-top:20px;'>
     Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
