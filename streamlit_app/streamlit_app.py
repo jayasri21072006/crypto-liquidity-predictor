@@ -13,48 +13,68 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Custom CSS
+# Dark theme CSS
 st.markdown("""
     <style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
     .title {
         text-align: center;
-        color: #0044cc;
-        font-size: 50px;
-        font-weight: bold;
+        color: #64b5f6;  /* light blue */
+        font-size: 48px;
+        font-weight: 700;
         margin-top: 15px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .subtitle {
         text-align: center;
-        color: #333;
+        color: #b0bec5;
         font-size: 20px;
         margin-bottom: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .section {
-        background-color: #ffffff;
-        border-radius: 15px;
+        background-color: #1e1e1e;
+        border-radius: 12px;
         padding: 20px;
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(100, 181, 246, 0.3);
         margin-top: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #e0e0e0;
     }
     .disclaimer {
-        background-color: #fff4e6;
-        border-left: 6px solid #ff9800;
+        background-color: #263238;
+        border-left: 6px solid #fbc02d;
         padding: 15px;
         border-radius: 10px;
         margin-top: 30px;
-        font-size: 18px;
+        font-size: 16px;
+        color: #fff9c4;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .result-high {
-        color: #00c853;
-        font-weight: bold;
+        color: #81c784; /* soft green */
+        font-weight: 600;
     }
     .result-medium {
-        color: #ffca28;
-        font-weight: bold;
+        color: #ffb74d; /* warm gold */
+        font-weight: 600;
     }
     .result-low {
-        color: #d50000;
-        font-weight: bold;
+        color: #e57373; /* soft red */
+        font-weight: 600;
+    }
+    /* Market cap text */
+    div[style*="Auto-calculated Market Cap"] {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #90caf9;
+    }
+    /* Footer styling */
+    p {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #90a4ae;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -62,31 +82,54 @@ st.markdown("""
 # Title & Subtitle without emoji
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("<hr style='border-color:#64b5f6'>", unsafe_allow_html=True)
+
+# Initialize session state for demo data loading
+if 'demo_loaded' not in st.session_state:
+    st.session_state.demo_loaded = False
+
+# Demo data example (Bitcoin sample prices)
+demo_data = {
+    "Open Price": 29400.1234,
+    "High Price": 29750.5678,
+    "Low Price": 29050.4321,
+    "Close Price": 29600.7890,
+    "Volume": 1200.5678
+}
+
+# Load Demo Data Button
+if st.button("Load Demo Data for Bitcoin"):
+    st.session_state.demo_loaded = True
+
+# Set default values based on demo data or zero
+default_open = demo_data["Open Price"] if st.session_state.demo_loaded else 0.0
+default_high = demo_data["High Price"] if st.session_state.demo_loaded else 0.0
+default_low = demo_data["Low Price"] if st.session_state.demo_loaded else 0.0
+default_close = demo_data["Close Price"] if st.session_state.demo_loaded else 0.0
+default_volume = demo_data["Volume"] if st.session_state.demo_loaded else 0.0
 
 # User Inputs with Market Cap shown below Low Price
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input(
-        'Open Price', value=0.0, format="%.4f",
+        'Open Price', value=default_open, format="%.4f",
         help="The price at which the cryptocurrency opened during the trading period."
     )
     high_price = st.number_input(
-        'High Price', value=0.0, format="%.4f",
+        'High Price', value=default_high, format="%.4f",
         help="The highest price the cryptocurrency reached during the trading period."
     )
     low_price = st.number_input(
-        'Low Price', value=0.0, format="%.4f",
+        'Low Price', value=default_low, format="%.4f",
         help="The lowest price the cryptocurrency reached during the trading period."
     )
-    # volume initialized later
 with col2:
     close_price = st.number_input(
-        'Close Price', value=0.0, format="%.4f",
+        'Close Price', value=default_close, format="%.4f",
         help="The price at which the cryptocurrency closed during the trading period."
     )
     volume = st.number_input(
-        'Volume', value=0.0, format="%.4f",
+        'Volume', value=default_volume, format="%.4f",
         help="The total amount of cryptocurrency traded during the trading period."
     )
 
@@ -95,11 +138,11 @@ market_cap = close_price * volume
 # Show Market Cap below Low Price input in col1 as readonly text (using st.markdown)
 st.markdown(f"""
     <div style="margin-top: 8px; font-weight: bold;">
-        Auto-calculated Market Cap: <span style="color:#0044cc;">${market_cap:,.2f}</span>
+        Auto-calculated Market Cap: <span style="color:#64b5f6;">${market_cap:,.2f}</span>
     </div>
 """, unsafe_allow_html=True)
 
-# Price Overview Chart
+# Price Overview Chart (Streamlit default line chart)
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
@@ -173,8 +216,8 @@ if st.button("Predict Liquidity"):
 
 # Footer with Coinsight ML team name
 st.markdown("""
-<hr>
-<p style='text-align:center; font-size:14px; color:grey;'>
+<hr style="border-color:#64b5f6;">
+<p style='text-align:center; font-size:14px; color:#90a4ae;'>
     Made with ❤️ by Coinsight ML team · Version 1.0 · Not financial advice
 </p>
 """, unsafe_allow_html=True)
