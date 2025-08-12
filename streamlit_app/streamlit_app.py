@@ -13,7 +13,7 @@ except Exception as e:
 # Page Setup
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 
-# Custom CSS (kept your colors and style as-is)
+# Custom CSS
 st.markdown("""
     <style>
     .title {
@@ -56,11 +56,6 @@ st.markdown("""
         color: #d50000;
         font-weight: bold;
     }
-    .tooltip {
-        border-bottom: 1px dotted black; 
-        cursor: help;
-        font-weight: bold;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -69,57 +64,53 @@ st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Initialize session state for demo data loading
-if 'demo_loaded' not in st.session_state:
-    st.session_state.demo_loaded = False
+# Initialize session state for inputs on first run or demo load
+if "open_price" not in st.session_state:
+    st.session_state.open_price = 0.0
+if "high_price" not in st.session_state:
+    st.session_state.high_price = 0.0
+if "low_price" not in st.session_state:
+    st.session_state.low_price = 0.0
+if "close_price" not in st.session_state:
+    st.session_state.close_price = 0.0
+if "volume" not in st.session_state:
+    st.session_state.volume = 0.0
 
-# Demo data example (without coin name)
-demo_data = {
-    "Open Price": 29400.1234,
-    "High Price": 29750.5678,
-    "Low Price": 29050.4321,
-    "Close Price": 29600.7890,
-    "Volume": 1200.5678
-}
+# Demo data function
+def load_demo_data():
+    st.session_state.open_price = 56787.5
+    st.session_state.high_price = 64776.4
+    st.session_state.low_price = 55000.0
+    st.session_state.close_price = 63000.0
+    st.session_state.volume = 123456.789
 
-# Load Demo Data Button (no coin name shown)
+# Demo data button
 if st.button("Load Demo Data"):
-    st.session_state.demo_loaded = True
+    load_demo_data()
 
-# Set default values based on demo data or zero
-default_open = demo_data["Open Price"] if st.session_state.demo_loaded else 0.0
-default_high = demo_data["High Price"] if st.session_state.demo_loaded else 0.0
-default_low = demo_data["Low Price"] if st.session_state.demo_loaded else 0.0
-default_close = demo_data["Close Price"] if st.session_state.demo_loaded else 0.0
-default_volume = demo_data["Volume"] if st.session_state.demo_loaded else 0.0
-
-# Helper function to add ? tooltip
-def label_with_tooltip(label, tooltip):
-    return f"{label} <span class='tooltip' title='{tooltip}'>?</span>"
-
-# User Inputs with tooltips (with your color scheme)
+# User Inputs with Market Cap shown below Low Price
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input(
-        label_with_tooltip('Open Price', "Price at which the crypto opened during the trading period."),
-        value=default_open, format="%.4f", help=None
+        'Open Price', value=st.session_state.open_price, format="%.4f",
+        help="The price at which the cryptocurrency opened during the trading period."
     )
     high_price = st.number_input(
-        label_with_tooltip('High Price', "Highest price the crypto reached during the trading period."),
-        value=default_high, format="%.4f", help=None
+        'High Price', value=st.session_state.high_price, format="%.4f",
+        help="The highest price the cryptocurrency reached during the trading period."
     )
     low_price = st.number_input(
-        label_with_tooltip('Low Price', "Lowest price the crypto reached during the trading period."),
-        value=default_low, format="%.4f", help=None
+        'Low Price', value=st.session_state.low_price, format="%.4f",
+        help="The lowest price the cryptocurrency reached during the trading period."
     )
 with col2:
     close_price = st.number_input(
-        label_with_tooltip('Close Price', "Price at which the crypto closed during the trading period."),
-        value=default_close, format="%.4f", help=None
+        'Close Price', value=st.session_state.close_price, format="%.4f",
+        help="The price at which the cryptocurrency closed during the trading period."
     )
     volume = st.number_input(
-        label_with_tooltip('Volume', "Total amount of cryptocurrency traded during the trading period."),
-        value=default_volume, format="%.4f", help=None
+        'Volume', value=st.session_state.volume, format="%.4f",
+        help="The total amount of cryptocurrency traded during the trading period."
     )
 
 market_cap = close_price * volume
