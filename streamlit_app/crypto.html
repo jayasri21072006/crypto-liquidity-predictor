@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
   
   <style>
-    /* Reset */
     body {
       margin: 0;
       font-family: 'Poppins', Arial, sans-serif;
@@ -17,7 +16,7 @@
     }
 
     nav {
-      background-color: #102a44; /* slightly different dark blue */
+      background-color: #102a44;
       color: white;
       display: flex;
       align-items: center;
@@ -25,11 +24,7 @@
       justify-content: space-between;
       border-radius: 0 0 10px 10px;
       box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-
-      /* Added bottom margin for spacing */
       margin-bottom: 30px;
-
-      /* Sticky nav so it stays on top */
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -73,7 +68,7 @@
     }
 
     ul.nav-links li a:hover {
-      color: #34e89e; /* turquoise accent */
+      color: #34e89e;
       text-decoration: underline;
     }
 
@@ -112,7 +107,6 @@
       outline: none;
     }
 
-    /* Responsive */
     @media (max-width: 600px) {
       nav {
         flex-direction: column;
