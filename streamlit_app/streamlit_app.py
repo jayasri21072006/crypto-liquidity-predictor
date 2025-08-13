@@ -62,7 +62,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with coin watermark background and light theme + tooltip styling
+# CSS with coin watermark background and light theme
 st.markdown("""
 <style>
 body {
@@ -191,35 +191,8 @@ a {
 a:hover {
     text-decoration: underline;
 }
-
-/* Tooltip style for question mark */
-.label-tooltip {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 5px;
-}
-
-.label-tooltip span {
-    border-bottom: 1px dotted #102a44;
-    cursor: help;
-    color: #0f3443;
-    font-weight: bold;
-    font-size: 16px;
-    user-select:none;
-}
 </style>
 """, unsafe_allow_html=True)
-
-# Helper function to create label with tooltip icon
-def label_with_tooltip(label, tooltip_text):
-    return f"""
-    <div class="label-tooltip">
-        <label>{label}</label>
-        <span title="{tooltip_text}">❓</span>
-    </div>
-    """
 
 # Title and subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
@@ -233,6 +206,7 @@ coin_names = sorted([
     'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
 ])
 
+# Coin logos URLs (you can expand as needed)
 coin_logos = {
     "Bitcoin": "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024",
     "Ethereum": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024",
@@ -241,6 +215,7 @@ coin_logos = {
     "XRP": "https://cryptologos.cc/logos/xrp-xrp-logo.png?v=024",
     "Solana": "https://cryptologos.cc/logos/solana-sol-logo.png?v=024",
     "Cardano": "https://cryptologos.cc/logos/cardano-ada-logo.png?v=024",
+    # Add more as needed
 }
 
 selected_coin = st.selectbox(
@@ -250,6 +225,7 @@ selected_coin = st.selectbox(
     help="Start typing to select a coin from the list."
 )
 
+# Display watermark background of selected coin's logo if available
 if selected_coin and selected_coin in coin_logos:
     st.markdown(
         f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark'>",
@@ -273,16 +249,12 @@ if st.button("Load Demo Data"):
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown(label_with_tooltip("Open Price", "The price at the start of the trading period."), unsafe_allow_html=True)
-    open_price = st.number_input("", value=st.session_state.open_price, format="%.4f", key="open_price", label_visibility="collapsed")
+    open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
+    high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f")
+    low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f")
 
-    st.markdown(label_with_tooltip("High Price", "The highest price during the trading period."), unsafe_allow_html=True)
-    high_price = st.number_input("", value=st.session_state.high_price, format="%.4f", key="high_price", label_visibility="collapsed")
-
-    st.markdown(label_with_tooltip("Low Price", "The lowest price during the trading period."), unsafe_allow_html=True)
-    low_price = st.number_input("", value=st.session_state.low_price, format="%.4f", key="low_price", label_visibility="collapsed")
-
-    market_cap = close_price * volume if 'close_price' in st.session_state and 'volume' in st.session_state else 0
+    # Auto market cap display (just a display, not editable)
+    market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
     <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
         Auto-calculated Market Cap:<br>
@@ -291,11 +263,8 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown(label_with_tooltip("Close Price", "The price at the end of the trading period."), unsafe_allow_html=True)
-    close_price = st.number_input("", value=st.session_state.close_price, format="%.4f", key="close_price", label_visibility="collapsed")
-
-    st.markdown(label_with_tooltip("Volume", "The total trading volume."), unsafe_allow_html=True)
-    volume = st.number_input("", value=st.session_state.volume, format="%.4f", key="volume", label_visibility="collapsed")
+    close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
+    volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
 # Update session state with inputs (important for market cap calculation consistency)
 st.session_state.open_price = open_price
@@ -304,13 +273,14 @@ st.session_state.low_price = low_price
 st.session_state.close_price = close_price
 st.session_state.volume = volume
 
+# Price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
-
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
+# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -345,34 +315,34 @@ def predict_price_trend(open_p, close_p):
 st.markdown("""
 <div class="disclaimer" style="font-size: 14px;">
     <strong>Disclaimer:</strong><br>
-    This tool uses an AI/ML model for educational purposes only. Predictions are not guaranteed. Always do your own research before making investments.
+    This tool uses an AI/ML model to make predictions based on input data.<br>
+    Predictions are not guaranteed for any particular cryptocurrency or token.<br>
+    No guarantees are made about accuracy or reliability. Use at your own risk.
 </div>
 """, unsafe_allow_html=True)
 
-if model:
-    if st.button("Predict Liquidity"):
-        with st.spinner("Analyzing..."):
-            try:
-                prediction_proba = model.predict_proba(input_data)[0][1]  # Probability of class 1
-                liquidity_level_html = classify_liquidity(prediction_proba)
-                price_trend = predict_price_trend(open_price, close_price)
-                st.markdown(f"""
-                <h3>Liquidity Level: {liquidity_level_html}</h3>
-                <h4>{price_trend}</h4>
-                """, unsafe_allow_html=True)
-            except Exception as e:
-                st.error(f"Prediction failed: {e}")
-else:
-    st.warning("Model is not loaded. Please check the model file.")
+agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# Footer with smaller font and links
-st.markdown("""
-<footer style="text-align:center; margin-top: 50px; font-size:14px; color:#555;">
-    <p>© 2025 CryptoPredictions. All rights reserved.</p>
-    <p>
-        <a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a> | 
-        <a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a> | 
-        <a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a>
-    </p>
-</footer>
-""", unsafe_allow_html=True)
+if st.button("Predict Liquidity"):
+    if not model:
+        st.error("Model not loaded. Prediction unavailable.")
+    elif agree:
+        try:
+            score = model.predict(input_data)[0]
+            liquidity_level = classify_liquidity(score)
+            trend = predict_price_trend(open_price, close_price)
+
+            st.markdown(f"""
+            <div class='section' style='text-align:center'>
+                <h2>Prediction Result</h2>
+                <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
+                <p><strong>Liquidity Score:</strong> {score:.2f}</p>
+                <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
+                <p><strong>Price Trend:</strong> {trend}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Prediction failed: {e}")
+    else:
+        st.warning("Please accept the disclaimer to proceed.")
+
