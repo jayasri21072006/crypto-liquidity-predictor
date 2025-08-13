@@ -62,7 +62,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with fixed bitcoin background watermark and light theme
+# CSS with fixed background watermark and light theme
 st.markdown("""
 <style>
 body {
@@ -91,7 +91,7 @@ body {
     left: 50%;
     width: 300px;
     height: 300px;
-    background-image: url('https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024');
+    background-image: url('https://www.bankrate.com/2021/04/cryptocurrency-1000x600.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -331,4 +331,4 @@ if st.button("Predict Liquidity"):
         except Exception as e:
             st.error(f"Prediction failed: {e}")
     else:
-        st.warning("Please accept the disclaimer to proceed.")
+        st.warning("Please accept the disclaimer to proceed.")  
