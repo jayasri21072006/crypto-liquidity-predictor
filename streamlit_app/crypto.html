@@ -15,7 +15,7 @@ def get_base64_image(image_path):
 image_path = "/mnt/data/b654d161-4eb4-4ed7-935c-d84b72ca0263.png"
 x_icon_base64 = get_base64_image(image_path)
 
-# --- Navbar HTML with base64 X icon ---
+# --- Navbar HTML with base64 Twitter icon and bold X text ---
 navbar_html = f"""
 <nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif; width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; box-sizing: border-box;">
   <div style="display:flex; align-items:center;">
@@ -27,13 +27,14 @@ navbar_html = f"""
     <li><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600;">Insights Blog</a></li>
   </ul>
   <div style="display:flex; align-items:center; gap:20px;">
-    <div>
-      <a href="https://twitter.com" target="_blank">
+    <div style="display:flex; align-items:center;">
+      <a href="https://twitter.com" target="_blank" style="margin-right:10px;">
         <img src="data:image/png;base64,{x_icon_base64}" style="width:24px; height:24px;">
       </a>
-      <a href="https://facebook.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;">
+      <a href="https://facebook.com" target="_blank" style="margin-right:10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px;">
       </a>
+      <a href="https://x.com" target="_blank" style="font-weight:bold; font-size:20px; color:white; text-decoration:none; user-select:none;">X</a>
     </div>
     <select style="background:transparent; border:none; color:white; font-weight:600; font-size:15px;">
       <option value="en" selected>English 🇬🇧</option>
