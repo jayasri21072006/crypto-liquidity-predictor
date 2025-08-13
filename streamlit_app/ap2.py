@@ -166,7 +166,7 @@ model = load_model()
 st.markdown("""
 <div style="background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;">
 <b>Disclaimer:</b><br>
-This is an AI-based tool and predictions are for informational purposes only. Use at your own risk.
+This is an AI-based tool and predictions are for informational purposes only. We are not responsible for any losses.Use at your own risk.
 </div>
 """, unsafe_allow_html=True)
 agree = st.checkbox("I agree to the disclaimer above.")
