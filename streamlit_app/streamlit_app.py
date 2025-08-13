@@ -345,4 +345,3 @@ if st.button("Predict Liquidity"):
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
-
