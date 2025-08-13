@@ -30,130 +30,56 @@ navbar_html = """
 </nav>
 """
 
+# --- Background Image (Base64) ---
+def get_base64_of_bin(file_path):
+    with open(file_path, 'rb') as f:
+        return base64.b64encode(f.read()).decode()
+
+def set_background(image_path):
+    bin_str = get_base64_of_bin(image_path)
+    css = f"""
+    <style>
+    body {{
+        background-image: url("data:image/png;base64,{bin_str}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    .stApp {{
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+    }}
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
+
 # --- Load ML Model ---
 def load_model():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
+        model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
         return joblib.load(model_path)
     except Exception as e:
-        st.error(f"Error loading model: {e}")
+        st.error(f"Model loading failed: {e}")
         return None
 
-# --- Helper for base64 encoding image ---
-def get_base64_of_bin(file):
-    return base64.b64encode(file.read()).decode()
-
-def set_background(image_file):
-    encoded_string = get_base64_of_bin(image_file)
-    st.markdown(
-        f"""
-        <style>
-        body {{
-            padding-top: 80px;
-            background-color: transparent;
-            background-image: url("data:image/png;base64,{encoded_string}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            font-family: 'Poppins', Arial, sans-serif;
-            color: white;
-        }}
-        .stApp {{
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: none;
-            min-height: 80vh;
-            z-index: 2;
-            position: relative;
-            color: white;
-        }}
-        .title, .subtitle, .disclaimer {{
-            color: white !important;
-        }}
-        .result-high {{
-            color: #00ff00;
-            font-weight: bold;
-        }}
-        .result-medium {{
-            color: #ffff00;
-            font-weight: bold;
-        }}
-        .result-low {{
-            color: #ff4444;
-            font-weight: bold;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-# --- Streamlit Setup ---
+# --- App Setup ---
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
-
-# --- Upload Background Image ---
-uploaded_file = st.file_uploader("Upload a background image (PNG/JPG)", type=['png', 'jpg', 'jpeg'])
-
-if uploaded_file:
-    set_background(uploaded_file)
-else:
-    # fallback background color if no image uploaded
-    st.markdown(
-        """
-        <style>
-        body {
-            padding-top: 80px;
-            background-color: #102a44;
-            font-family: 'Poppins', Arial, sans-serif;
-            color: white;
-        }
-        .stApp {
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: none;
-            min-height: 80vh;
-            z-index: 2;
-            position: relative;
-            color: white;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+set_background(os.path.join(os.path.dirname(__file__), "../Screenshot (96).png"))
 
 # --- Title & Subtitle ---
-st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:white;'>Crypto Liquidity Predictor</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color:white;'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</p><hr>", unsafe_allow_html=True)
 
-# --- Coin Selector ---
+# --- Coin Selection ---
 coin_names = sorted([
     'Bitcoin', 'Ethereum', 'Tether', 'BNB', 'XRP', 'Solana', 'Cardano',
     'Dogecoin', 'Shiba Inu', 'Polygon', 'Litecoin', 'Polkadot', 'Avalanche',
     'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
 ])
+selected_coin = st.selectbox("Optional: Select a Coin", [""] + coin_names)
 
-coin_logos = {
-    "Bitcoin": "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024",
-    "Ethereum": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024",
-    "Tether": "https://cryptologos.cc/logos/tether-usdt-logo.png?v=024",
-    "BNB": "https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=024",
-    "XRP": "https://cryptologos.cc/logos/xrp-xrp-logo.png?v=024",
-    "Solana": "https://cryptologos.cc/logos/solana-sol-logo.png?v=024",
-    "Cardano": "https://cryptologos.cc/logos/cardano-ada-logo.png?v=024"
-}
-
-selected_coin = st.selectbox("Optional: Select a Coin Name", [""] + coin_names, index=0)
-if selected_coin and selected_coin in coin_logos:
-    st.markdown(
-        f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark' style='height: 50px; margin-top:10px;'>",
-        unsafe_allow_html=True
-    )
-
-# --- Input Fields Initialization ---
+# --- Input Defaults ---
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -168,34 +94,34 @@ def load_demo_data():
 if st.button("Load Demo Data"):
     load_demo_data()
 
-# --- Input Form ---
+# --- Input Fields ---
 col1, col2 = st.columns(2)
 with col1:
     open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
     high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f")
     low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f")
-
 with col2:
     close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
     volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
-# --- Update Session ---
+# --- Update Session State ---
 st.session_state.open_price = open_price
 st.session_state.high_price = high_price
 st.session_state.low_price = low_price
 st.session_state.close_price = close_price
 st.session_state.volume = volume
 
-# --- Market Cap Calculation ---
+# --- Market Cap ---
 market_cap = close_price * volume
-st.markdown(f"""<div style="margin-top: 10px; font-weight: bold; font-size: 16px;">Auto-calculated Market Cap:<br><span style="color:#00aaff;">${market_cap:,.2f}</span></div>""", unsafe_allow_html=True)
+st.markdown(f"<h4 style='color:#00c8ff;'>Market Cap: ${market_cap:,.2f}</h4>", unsafe_allow_html=True)
 
-# --- Price Chart ---
-price_df = pd.DataFrame({"Price": [open_price, high_price, low_price, close_price]}, index=["Open", "High", "Low", "Close"])
-st.markdown("### Price Overview")
+# --- Line Chart ---
+price_df = pd.DataFrame({
+    "Price": [open_price, high_price, low_price, close_price]
+}, index=["Open", "High", "Low", "Close"])
 st.line_chart(price_df)
 
-# --- Model Input Format ---
+# --- Model Input Data ---
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -212,55 +138,50 @@ input_data = pd.DataFrame({
 # --- Load Model ---
 model = load_model()
 
-# --- Classifier Helper Functions ---
+# --- Classification ---
 def classify_liquidity(score):
     if score < 0.4:
-        return "<span class='result-low'>Low</span>"
+        return "<span style='color:red; font-weight:bold;'>Low</span>"
     elif score < 0.7:
-        return "<span class='result-medium'>Medium</span>"
+        return "<span style='color:yellow; font-weight:bold;'>Medium</span>"
     else:
-        return "<span class='result-high'>High</span>"
+        return "<span style='color:lightgreen; font-weight:bold;'>High</span>"
 
-def predict_price_trend(open_p, close_p):
+def predict_trend(open_p, close_p):
     if close_p > open_p:
-        return "Price may go Up"
+        return "📈 Price likely to increase"
     elif close_p < open_p:
-        return "Price may go Down"
+        return "📉 Price likely to decrease"
     else:
-        return "No Clear Price Movement"
+        return "⚖️ No significant movement"
 
 # --- Disclaimer ---
 st.markdown("""
-<div class="disclaimer" style="margin-top: 30px;">
-    <strong>Disclaimer:</strong><br>
-    This tool uses an AI/ML model to make predictions based on input data.<br>
-    Predictions are not guaranteed for any particular cryptocurrency or token.<br>
-    No guarantees are made about accuracy or reliability. Use at your own risk.
+<div style="background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;">
+<b>Disclaimer:</b><br>
+This is an AI-based tool and predictions are for informational purposes only. Use at your own risk.
 </div>
 """, unsafe_allow_html=True)
-
-agree = st.checkbox("I acknowledge and accept the disclaimer above.")
+agree = st.checkbox("I agree to the disclaimer above.")
 
 # --- Prediction Button ---
 if st.button("Predict Liquidity"):
     if not model:
-        st.error("Model not loaded. Prediction unavailable.")
-    elif agree:
+        st.error("Model not loaded.")
+    elif not agree:
+        st.warning("You must accept the disclaimer to proceed.")
+    else:
         try:
             score = model.predict(input_data)[0]
-            liquidity_level = classify_liquidity(score)
-            trend = predict_price_trend(open_price, close_price)
+            liquidity = classify_liquidity(score)
+            trend = predict_trend(open_price, close_price)
 
             st.markdown(f"""
-            <div class='section' style='text-align:center; margin-top: 20px;'>
-                <h2>Prediction Result</h2>
-                <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
-                <p><strong>Liquidity Score:</strong> {score:.2f}</p>
-                <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
-                <p><strong>Price Trend:</strong> {trend}</p>
+            <div style='text-align:center;'>
+                <h3>Prediction Results</h3>
+                <p><strong>Liquidity Level:</strong> {liquidity}</p>
+                <p><strong>Trend:</strong> {trend}</p>
             </div>
             """, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Prediction failed: {e}")
-    else:
-        st.warning("Please accept the disclaimer to proceed.")
