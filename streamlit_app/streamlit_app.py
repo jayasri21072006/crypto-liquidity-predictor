@@ -35,7 +35,7 @@ navbar_html = """
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://twitter.com" target="_blank" aria-label="X"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/X_logo_2023.svg" alt="X" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
       <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
     <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
@@ -47,7 +47,6 @@ navbar_html = """
 </nav>
 """
 
-# Fix: Use __file__ (double underscores) to get script directory
 def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +61,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with coin watermark background and light theme
+# CSS with fixed Bitcoin watermark background and light theme
 st.markdown("""
 <style>
 body {
@@ -82,14 +81,14 @@ body {
     min-height: 80vh;
 }
 
-/* Background watermark for coin logo */
+/* Fixed background watermark for Bitcoin logo */
 .background-watermark {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
-    width: 250px;
-    height: 250px;
-    opacity: 0.1;
+    width: 300px;
+    height: 300px;
+    opacity: 0.07;
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 0;
@@ -194,6 +193,12 @@ a:hover {
 </style>
 """, unsafe_allow_html=True)
 
+# Add the fixed background Bitcoin logo watermark
+st.markdown(
+    "<img class='background-watermark' src='https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024' alt='Bitcoin Logo Watermark'>",
+    unsafe_allow_html=True
+)
+
 # Title and subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
@@ -206,31 +211,12 @@ coin_names = sorted([
     'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
 ])
 
-# Coin logos URLs (you can expand as needed)
-coin_logos = {
-    "Bitcoin": "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024",
-    "Ethereum": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024",
-    "Tether": "https://cryptologos.cc/logos/tether-usdt-logo.png?v=024",
-    "BNB": "https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=024",
-    "XRP": "https://cryptologos.cc/logos/xrp-xrp-logo.png?v=024",
-    "Solana": "https://cryptologos.cc/logos/solana-sol-logo.png?v=024",
-    "Cardano": "https://cryptologos.cc/logos/cardano-ada-logo.png?v=024",
-    # Add more as needed
-}
-
 selected_coin = st.selectbox(
     "Optional: Select a Coin Name",
     [""] + coin_names,
     index=0,
     help="Start typing to select a coin from the list."
 )
-
-# Display watermark background of selected coin's logo if available
-if selected_coin and selected_coin in coin_logos:
-    st.markdown(
-        f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark'>",
-        unsafe_allow_html=True
-    )
 
 # Session state init
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
