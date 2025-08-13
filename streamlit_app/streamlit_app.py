@@ -1,6 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import pickle
+import joblib
 import pandas as pd
 import os
 
@@ -51,9 +51,7 @@ def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
-        with open(model_path, 'rb') as f:
-            model = pickle.load(f)
-        return model
+        return joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
@@ -63,7 +61,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with coin watermark background and light theme
+# CSS for page + tooltip styling
 st.markdown("""
 <style>
 body {
@@ -72,6 +70,8 @@ body {
     font-family: 'Poppins', Arial, sans-serif;
     color: #102a44;
 }
+
+/* Main app container */
 .stApp {
     background-color: rgba(255, 255, 255, 0.95);
     padding: 30px 40px;
@@ -80,6 +80,8 @@ body {
     position: relative;
     min-height: 80vh;
 }
+
+/* Background watermark for coin logo */
 .background-watermark {
     position: absolute;
     top: 50%;
@@ -91,6 +93,8 @@ body {
     pointer-events: none;
     z-index: 0;
 }
+
+/* Titles */
 .title {
     text-align: center;
     color: #0044cc;
@@ -100,6 +104,7 @@ body {
     z-index: 1;
     position: relative;
 }
+
 .subtitle {
     text-align: center;
     color: #333;
@@ -108,6 +113,7 @@ body {
     z-index: 1;
     position: relative;
 }
+
 .section {
     background-color: #ffffff;
     border-radius: 15px;
@@ -117,6 +123,7 @@ body {
     position: relative;
     z-index: 1;
 }
+
 .disclaimer {
     background-color: #fff4e6;
     border-left: 6px solid #ff9800;
@@ -127,18 +134,23 @@ body {
     position: relative;
     z-index: 1;
 }
+
 .result-high {
     color: #00c853;
     font-weight: bold;
 }
+
 .result-medium {
     color: #ffca28;
     font-weight: bold;
 }
+
 .result-low {
     color: #d50000;
     font-weight: bold;
 }
+
+/* Inputs */
 .stNumberInput > div > input {
     background-color: #fff !important;
     color: #102a44 !important;
@@ -146,6 +158,7 @@ body {
     border-radius: 6px;
     padding: 8px;
 }
+
 .stButton > button {
     background-color: #4ca1af;
     color: white;
@@ -156,9 +169,11 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .stButton > button:hover {
     background-color: #397f86;
 }
+
 select {
     background-color: #fff;
     color: #102a44;
@@ -167,6 +182,7 @@ select {
     border-radius: 6px;
     border: 1.5px solid #cdd9e5;
 }
+
 a {
     color: #4ca1af;
     text-decoration: none;
@@ -174,8 +190,47 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+/* Tooltip CSS */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted #102a44;
+  cursor: help;
+  color: #102a44;
+  font-weight: 600;
+  font-size: 16px;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 180px;
+  background-color: #102a44;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px 10px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -90px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 14px;
+  line-height: 1.2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
 </style>
 """, unsafe_allow_html=True)
+
+# Function to render label with tooltip
+def label_with_tooltip(label, tooltip_text):
+    return f'<span class="tooltip">{label}<span class="tooltiptext">{tooltip_text}</span></span>'
 
 # Title and subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
@@ -212,6 +267,7 @@ if selected_coin and selected_coin in coin_logos:
         unsafe_allow_html=True
     )
 
+# Session state init
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -227,11 +283,18 @@ if st.button("Load Demo Data"):
     load_demo_data()
 
 col1, col2 = st.columns(2)
-with col1:
-    open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
-    high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f")
-    low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f")
 
+with col1:
+    st.markdown(label_with_tooltip("Open Price", "The price of the cryptocurrency at market open."), unsafe_allow_html=True)
+    open_price = st.number_input("", value=st.session_state.open_price, format="%.4f")
+
+    st.markdown(label_with_tooltip("High Price", "The highest price during the trading period."), unsafe_allow_html=True)
+    high_price = st.number_input("", value=st.session_state.high_price, format="%.4f")
+
+    st.markdown(label_with_tooltip("Low Price", "The lowest price during the trading period."), unsafe_allow_html=True)
+    low_price = st.number_input("", value=st.session_state.low_price, format="%.4f")
+
+    # Auto market cap display (just a display, not editable)
     market_cap = st.session_state.close_price * st.session_state.volume
     st.markdown(f"""
     <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
@@ -241,21 +304,27 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
-    volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
+    st.markdown(label_with_tooltip("Close Price", "The price of the cryptocurrency at market close."), unsafe_allow_html=True)
+    close_price = st.number_input("", value=st.session_state.close_price, format="%.4f")
 
+    st.markdown(label_with_tooltip("Volume", "Total volume of the cryptocurrency traded."), unsafe_allow_html=True)
+    volume = st.number_input("", value=st.session_state.volume, format="%.4f")
+
+# Update session state with inputs
 st.session_state.open_price = open_price
 st.session_state.high_price = high_price
 st.session_state.low_price = low_price
 st.session_state.close_price = close_price
 st.session_state.volume = volume
 
+# Price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
+# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -317,7 +386,6 @@ if st.button("Predict Liquidity"):
             </div>
             """, unsafe_allow_html=True)
         except Exception as e:
-            st.error(f"Prediction error: {e}")
+            st.error(f"Prediction failed: {e}")
     else:
-        st.warning("Please accept the disclaimer to get prediction.")
-
+        st.warning("Please accept the disclaimer to proceed.")
