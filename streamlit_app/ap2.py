@@ -49,10 +49,6 @@ def set_background_url(image_url):
     """
     st.markdown(css, unsafe_allow_html=True)
 
-# Use the raw GitHub URL
-set_background_url("https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg")
-
-
 # --- Load Model ---
 def load_model():
     try:
@@ -83,8 +79,8 @@ def predict_trend(open_p, close_p):
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# Use your GitHub raw image URL here:
-background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/Screenshot%20(96).png"
+# ✅ --- Updated Background Image URL ---
+background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg"
 set_background_url(background_img_url)
 
 # --- Title & Subtitle ---
