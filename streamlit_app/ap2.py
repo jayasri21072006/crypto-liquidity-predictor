@@ -3,7 +3,6 @@ import streamlit.components.v1 as components
 import joblib
 import pandas as pd
 import os
-import base64
 
 # --- Navbar HTML ---
 navbar_html = """
@@ -30,8 +29,8 @@ navbar_html = """
 </nav>
 """
 
-# --- Background Image (From GitHub URL) ---
-def set_background_from_url(image_url):
+# --- Set Background Using GitHub Raw Image URL ---
+def set_background_url(image_url):
     css = f"""
     <style>
     body {{
@@ -39,17 +38,18 @@ def set_background_from_url(image_url):
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+        margin: 0;
+        padding-top: 80px;  /* so content not hidden behind navbar */
     }}
     .stApp {{
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.6) !important;
         color: white;
-        min-height: 100vh;
     }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
 
-# --- Load ML Model ---
+# --- Load Model ---
 def load_model():
     try:
         model_path = os.path.join(os.path.dirname(__file__), 'crypto_liquidity_model.pkl')
@@ -58,16 +58,33 @@ def load_model():
         st.error(f"Model loading failed: {e}")
         return None
 
+# --- Classification ---
+def classify_liquidity(score):
+    if score < 0.4:
+        return "<span style='color:red; font-weight:bold;'>Low</span>"
+    elif score < 0.7:
+        return "<span style='color:yellow; font-weight:bold;'>Medium</span>"
+    else:
+        return "<span style='color:lightgreen; font-weight:bold;'>High</span>"
+
+def predict_trend(open_p, close_p):
+    if close_p > open_p:
+        return "📈 Price likely to increase"
+    elif close_p < open_p:
+        return "📉 Price likely to decrease"
+    else:
+        return "⚖️ No significant movement"
+
 # --- App Setup ---
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# Set background using your GitHub image raw URL here:
-github_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/streamlit_app/3b7de93d-46a3-428a-b852-07f3849c67b7.png"
-set_background_from_url(github_img_url)
+# Use your GitHub raw image URL here:
+background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/Screenshot%20(96).png"
+set_background_url(background_img_url)
 
 # --- Title & Subtitle ---
-st.markdown("<h1 style='color:white; margin-top:100px;'>Crypto Liquidity Predictor</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:white;'>Crypto Liquidity Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<p style='color:white;'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</p><hr>", unsafe_allow_html=True)
 
 # --- Coin Selection ---
@@ -136,23 +153,6 @@ input_data = pd.DataFrame({
 
 # --- Load Model ---
 model = load_model()
-
-# --- Classification ---
-def classify_liquidity(score):
-    if score < 0.4:
-        return "<span style='color:red; font-weight:bold;'>Low</span>"
-    elif score < 0.7:
-        return "<span style='color:yellow; font-weight:bold;'>Medium</span>"
-    else:
-        return "<span style='color:lightgreen; font-weight:bold;'>High</span>"
-
-def predict_trend(open_p, close_p):
-    if close_p > open_p:
-        return "📈 Price likely to increase"
-    elif close_p < open_p:
-        return "📉 Price likely to decrease"
-    else:
-        return "⚖️ No significant movement"
 
 # --- Disclaimer ---
 st.markdown("""
