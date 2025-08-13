@@ -43,21 +43,21 @@ def load_model():
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# --- CSS Styling ---
-st.markdown("""
+# --- CSS Styling with uploaded image as background ---
+st.markdown(f"""
 <style>
-body {
+body {{
     padding-top: 80px;
     background-color: #f9fafb;
-    background-image: url('https://images.unsplash.com/photo-1611078489935-d28db56e7966?auto=format&fit=crop&w=1450&q=80');
+    background-image: url("/mnt/data/5f5c230c-cbae-458d-9f94-18f5c3d0e061.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     font-family: 'Poppins', Arial, sans-serif;
     color: #102a44;
-}
+}}
 
-.stApp {
+.stApp {{
     background-color: rgba(255, 255, 255, 0.9);
     padding: 30px 40px;
     border-radius: 12px;
@@ -65,9 +65,9 @@ body {
     min-height: 80vh;
     z-index: 2;
     position: relative;
-}
+}}
 
-.background-watermark {
+.background-watermark {{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -77,26 +77,26 @@ body {
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 0;
-}
+}}
 
-.title {
+.title {{
     text-align: center;
     color: #0044cc;
     font-size: 50px;
     font-weight: bold;
     z-index: 3;
     position: relative;
-}
+}}
 
-.subtitle {
+.subtitle {{
     text-align: center;
     font-size: 20px;
     margin-bottom: 20px;
     z-index: 3;
     position: relative;
-}
+}}
 
-.disclaimer {
+.disclaimer {{
     background-color: #fff4e6;
     border-left: 6px solid #ff9800;
     padding: 15px;
@@ -105,11 +105,11 @@ body {
     font-size: 14px;
     z-index: 3;
     position: relative;
-}
+}}
 
-.result-high { color: #00c853; font-weight: bold; }
-.result-medium { color: #ffca28; font-weight: bold; }
-.result-low { color: #d50000; font-weight: bold; }
+.result-high {{ color: #00c853; font-weight: bold; }}
+.result-medium {{ color: #ffca28; font-weight: bold; }}
+.result-low {{ color: #d50000; font-weight: bold; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -253,4 +253,3 @@ if st.button("Predict Liquidity"):
             st.error(f"Prediction failed: {e}")
     else:
         st.warning("Please accept the disclaimer to proceed.")
-
