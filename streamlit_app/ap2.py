@@ -43,10 +43,10 @@ def load_model():
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# --- Background Image URL (replace this with your direct image URL) ---
-background_img_url = "https://images.unsplash.com/photo-1602524810924-03299e45b1a7?auto=format&fit=crop&w=1350&q=80"  # example image from Unsplash
+# --- Background Image URL from GitHub ---
+background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/Screenshot%20(96).png"
 
-# --- CSS Styling with uploaded image as background ---
+# --- CSS Styling with GitHub image as background ---
 st.markdown(f"""
 <style>
 body {{
