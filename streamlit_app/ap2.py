@@ -188,6 +188,7 @@ if st.button("Predict Liquidity"):
                 <h3>Prediction Results</h3>
                 <p><strong>Liquidity Level:</strong> {liquidity}</p>
                 <p><strong>Trend:</strong> {trend}</p>
+                <p style="margin-top:20px; font-style:italic; font-weight:bold;">Made with ML model ❤️</p>
             </div>
             """, unsafe_allow_html=True)
         except Exception as e:
