@@ -2,10 +2,21 @@ import streamlit as st
 import streamlit.components.v1 as components
 import joblib
 import pandas as pd
+import base64
 import os
 
-# --- Navbar HTML ---
-navbar_html = """
+# --- Load your local PNG and convert to base64 ---
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        b64_str = base64.b64encode(img_file.read()).decode()
+    return b64_str
+
+# Path to your uploaded PNG (adjust if needed)
+image_path = "/mnt/data/b654d161-4eb4-4ed7-935c-d84b72ca0263.png"
+x_icon_base64 = get_base64_image(image_path)
+
+# --- Navbar HTML with base64 X icon ---
+navbar_html = f"""
 <nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif; width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; box-sizing: border-box;">
   <div style="display:flex; align-items:center;">
     <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
@@ -18,7 +29,7 @@ navbar_html = """
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
       <a href="https://twitter.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733635.png" style="width:24px; height:24px;">
+        <img src="data:image/png;base64,{x_icon_base64}" style="width:24px; height:24px;">
       </a>
       <a href="https://facebook.com" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;">
@@ -85,7 +96,7 @@ def predict_trend(open_p, close_p):
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# ✅ --- Updated Background Image URL ---
+# --- Background Image ---
 background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg"
 set_background_url(background_img_url)
 
