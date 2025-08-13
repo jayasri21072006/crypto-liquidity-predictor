@@ -17,8 +17,12 @@ navbar_html = """
   </ul>
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" style="width:24px; height:24px;"></a>
-      <a href="https://facebook.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;"></a>
+      <a href="https://twitter.com" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/X_logo_2023.svg" style="width:24px; height:24px;">
+      </a>
+      <a href="https://facebook.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;">
+      </a>
     </div>
     <select style="background:transparent; border:none; color:white; font-weight:600; font-size:15px;">
       <option value="en" selected>English 🇬🇧</option>
@@ -50,7 +54,6 @@ def set_background_url(image_url):
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
-
 
 # --- Load Model ---
 def load_model():
