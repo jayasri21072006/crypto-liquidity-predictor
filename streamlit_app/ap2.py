@@ -33,21 +33,24 @@ navbar_html = """
 def set_background_url(image_url):
     css = f"""
     <style>
-    body {{
+    html, body {{
+        height: 100%;
+        margin: 0;
+        padding: 0;
         background-image: url("{image_url}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        margin: 0;
-        padding-top: 80px;  /* so content not hidden behind navbar */
     }}
     .stApp {{
         background-color: rgba(0, 0, 0, 0.6) !important;
         color: white;
+        height: 100%;
     }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
+
 
 # --- Load Model ---
 def load_model():
