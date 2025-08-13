@@ -35,7 +35,7 @@ navbar_html = """
 
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank" aria-label="X"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/X_logo_2023.svg" alt="X" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
+      <a href="https://x.com" target="_blank" aria-label="X (Twitter)"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="X" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease;"></a>
       <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:24px; height:24px; cursor:pointer; filter:brightness(100%); transition:filter 0.3s ease; margin-left: 10px;"></a>
     </div>
     <select aria-label="Select Language" style="background:transparent; border:none; color:white; font-weight:600; font-size:15px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.3s ease;">
@@ -47,6 +47,7 @@ navbar_html = """
 </nav>
 """
 
+# Fix: Use __file__ (double underscores) to get script directory
 def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +62,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with fixed Bitcoin watermark background and light theme
+# CSS with fixed bitcoin background watermark and light theme
 st.markdown("""
 <style>
 body {
@@ -79,19 +80,25 @@ body {
     box-shadow: 0 8px 30px rgba(16, 42, 68, 0.1);
     position: relative;
     min-height: 80vh;
+    z-index: 1;
 }
 
-/* Fixed background watermark for Bitcoin logo */
-.background-watermark {
+/* Background watermark as fixed pseudo-element */
+.stApp::before {
+    content: "";
     position: fixed;
     top: 50%;
     left: 50%;
     width: 300px;
     height: 300px;
+    background-image: url('https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
     opacity: 0.07;
     transform: translate(-50%, -50%);
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 }
 
 /* Titles */
@@ -192,12 +199,6 @@ a:hover {
 }
 </style>
 """, unsafe_allow_html=True)
-
-# Add the fixed background Bitcoin logo watermark
-st.markdown(
-    "<img class='background-watermark' src='https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024' alt='Bitcoin Logo Watermark'>",
-    unsafe_allow_html=True
-)
 
 # Title and subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
