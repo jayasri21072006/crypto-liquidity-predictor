@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
 import pickle
 
 # --- Load your ML model ---
@@ -153,32 +152,16 @@ if st.button("Predict Liquidity Level"):
 
     st.markdown(f"<h3 style='color:{color};'>Liquidity Prediction: {level} (Score: {pred_score:.2f})</h3>", unsafe_allow_html=True)
 
-    # Show candlestick chart with sample historical data
-    # Replace this with real historical data if you have it
-    sample_data = {
-        'date': pd.date_range(end=pd.Timestamp.today(), periods=10),
-        'open': np.linspace(open_price*0.9, open_price*1.1, 10),
-        'high': np.linspace(high_price*0.95, high_price*1.1, 10),
-        'low': np.linspace(low_price*0.85, low_price*1.05, 10),
-        'close': np.linspace(close_price*0.9, close_price*1.1, 10),
-        'volume': np.linspace(volume*0.8, volume*1.2, 10),
-    }
-    df_hist = pd.DataFrame(sample_data)
+    # Show simple line chart for prices
+    sample_dates = pd.date_range(end=pd.Timestamp.today(), periods=10)
+    sample_data = pd.DataFrame({
+        "Open": np.linspace(open_price * 0.9, open_price * 1.1, 10),
+        "High": np.linspace(high_price * 0.95, high_price * 1.1, 10),
+        "Low": np.linspace(low_price * 0.85, low_price * 1.05, 10),
+        "Close": np.linspace(close_price * 0.9, close_price * 1.1, 10),
+    }, index=sample_dates)
 
-    fig = go.Figure(data=[go.Candlestick(
-        x=df_hist['date'],
-        open=df_hist['open'],
-        high=df_hist['high'],
-        low=df_hist['low'],
-        close=df_hist['close'],
-        increasing_line_color='green',
-        decreasing_line_color='red'
-    )])
-    fig.update_layout(title=f"Candlestick Chart for {coin if coin else 'Selected Coin'}",
-                      xaxis_title="Date",
-                      yaxis_title="Price",
-                      height=500)
-    st.plotly_chart(fig)
+    st.line_chart(sample_data)
 
 st.markdown("""
 ---
