@@ -47,7 +47,6 @@ navbar_html = """
 </nav>
 """
 
-# Fix: Use __file__ (double underscores) to get script directory
 def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +61,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS with fixed background watermark and light theme
+# CSS with fixed bitcoin background watermark and light theme
 st.markdown("""
 <style>
 body {
@@ -81,24 +80,6 @@ body {
     position: relative;
     min-height: 80vh;
     z-index: 1;
-}
-
-/* Background watermark as fixed pseudo-element */
-.stApp::before {
-    content: "";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 300px;
-    height: 300px;
-    background-image: url('https://www.bankrate.com/2021/04/cryptocurrency-1000x600.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    opacity: 0.07;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: -1;
 }
 
 /* Titles */
@@ -198,6 +179,28 @@ a:hover {
     text-decoration: underline;
 }
 </style>
+""", unsafe_allow_html=True)
+
+# Background watermark div (fixed position behind content)
+st.markdown("""
+<style>
+.background-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    background-image: url('https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.07;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+}
+</style>
+<div class="background-watermark"></div>
 """, unsafe_allow_html=True)
 
 # Title and subtitle
@@ -331,4 +334,4 @@ if st.button("Predict Liquidity"):
         except Exception as e:
             st.error(f"Prediction failed: {e}")
     else:
-        st.warning("Please accept the disclaimer to proceed.")  
+        st.warning("Please accept the disclaimer to proceed.")
