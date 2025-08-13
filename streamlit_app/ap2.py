@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import joblib
 import pandas as pd
 import os
+import base64
 
 # --- Navbar HTML ---
 navbar_html = """
@@ -39,56 +40,89 @@ def load_model():
         st.error(f"Error loading model: {e}")
         return None
 
+# --- Helper for base64 encoding image ---
+def get_base64_of_bin(file):
+    return base64.b64encode(file.read()).decode()
+
+def set_background(image_file):
+    encoded_string = get_base64_of_bin(image_file)
+    st.markdown(
+        f"""
+        <style>
+        body {{
+            padding-top: 80px;
+            background-color: transparent;
+            background-image: url("data:image/png;base64,{encoded_string}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Poppins', Arial, sans-serif;
+            color: white;
+        }}
+        .stApp {{
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: none;
+            min-height: 80vh;
+            z-index: 2;
+            position: relative;
+            color: white;
+        }}
+        .title, .subtitle, .disclaimer {{
+            color: white !important;
+        }}
+        .result-high {{
+            color: #00ff00;
+            font-weight: bold;
+        }}
+        .result-medium {{
+            color: #ffff00;
+            font-weight: bold;
+        }}
+        .result-low {{
+            color: #ff4444;
+            font-weight: bold;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 # --- Streamlit Setup ---
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# --- Background Image Path (uploaded image) ---
-background_img_path = "/mnt/data/f579c044-d998-4ae9-ba04-5b3516794592.png"
+# --- Upload Background Image ---
+uploaded_file = st.file_uploader("Upload a background image (PNG/JPG)", type=['png', 'jpg', 'jpeg'])
 
-# --- CSS Styling with transparent background ---
-st.markdown(f"""
-<style>
-body {{
-    padding-top: 80px;
-    background-color: transparent;
-    background-image: url("{background_img_path}");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    font-family: 'Poppins', Arial, sans-serif;
-    color: white;
-}}
-
-.stApp {{
-    background-color: rgba(0, 0, 0, 0.3);
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: none;
-    min-height: 80vh;
-    z-index: 2;
-    position: relative;
-    color: white;
-}}
-
-.title, .subtitle, .disclaimer {{
-    color: white !important;
-}}
-
-.result-high {{
-    color: #00ff00;
-    font-weight: bold;
-}}
-.result-medium {{
-    color: #ffff00;
-    font-weight: bold;
-}}
-.result-low {{
-    color: #ff4444;
-    font-weight: bold;
-}}
-</style>
-""", unsafe_allow_html=True)
+if uploaded_file:
+    set_background(uploaded_file)
+else:
+    # fallback background color if no image uploaded
+    st.markdown(
+        """
+        <style>
+        body {
+            padding-top: 80px;
+            background-color: #102a44;
+            font-family: 'Poppins', Arial, sans-serif;
+            color: white;
+        }
+        .stApp {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: none;
+            min-height: 80vh;
+            z-index: 2;
+            position: relative;
+            color: white;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # --- Title & Subtitle ---
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
@@ -115,7 +149,7 @@ coin_logos = {
 selected_coin = st.selectbox("Optional: Select a Coin Name", [""] + coin_names, index=0)
 if selected_coin and selected_coin in coin_logos:
     st.markdown(
-        f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark'>",
+        f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark' style='height: 50px; margin-top:10px;'>",
         unsafe_allow_html=True
     )
 
@@ -197,7 +231,7 @@ def predict_price_trend(open_p, close_p):
 
 # --- Disclaimer ---
 st.markdown("""
-<div class="disclaimer">
+<div class="disclaimer" style="margin-top: 30px;">
     <strong>Disclaimer:</strong><br>
     This tool uses an AI/ML model to make predictions based on input data.<br>
     Predictions are not guaranteed for any particular cryptocurrency or token.<br>
@@ -218,7 +252,7 @@ if st.button("Predict Liquidity"):
             trend = predict_price_trend(open_price, close_price)
 
             st.markdown(f"""
-            <div class='section' style='text-align:center'>
+            <div class='section' style='text-align:center; margin-top: 20px;'>
                 <h2>Prediction Result</h2>
                 <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
                 <p><strong>Liquidity Score:</strong> {score:.2f}</p>
