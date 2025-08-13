@@ -4,11 +4,13 @@ import joblib
 import pandas as pd
 import os
 
-# --- Navbar HTML ---
+# --- Navbar HTML with bold X text and FB icon ---
 navbar_html = """
-<nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif; width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; box-sizing: border-box;">
-  <div style="display:flex; align-items:center;">
-    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
+<nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; 
+            border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif; 
+            width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; box-sizing: border-box;">
+  <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">
+    CryptoPredictions
   </div>
   <ul class="nav-links" style="list-style:none; display:flex; gap: 25px; margin:0; padding:0;">
     <li><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600;">Market Updates</a></li>
@@ -17,11 +19,11 @@ navbar_html = """
   </ul>
   <div style="display:flex; align-items:center; gap:20px;">
     <div>
-      <a href="https://twitter.com" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/X_logo_2023.svg" style="width:24px; height:24px;">
+      <a href="https://twitter.com" target="_blank" style="font-weight:bold; font-size:24px; color:white; text-decoration:none; margin-right:10px;">
+        X
       </a>
       <a href="https://facebook.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px;">
       </a>
     </div>
     <select style="background:transparent; border:none; color:white; font-weight:600; font-size:15px;">
@@ -85,7 +87,7 @@ def predict_trend(open_p, close_p):
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# ✅ --- Updated Background Image URL ---
+# --- Background Image ---
 background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg"
 set_background_url(background_img_url)
 
