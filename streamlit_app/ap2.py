@@ -43,76 +43,50 @@ def load_model():
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# --- Background Image URL from GitHub ---
-background_img_url = "https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/Screenshot%20(96).png"
+# --- Background Image Path (uploaded image) ---
+background_img_path = "/mnt/data/f579c044-d998-4ae9-ba04-5b3516794592.png"
 
-# --- CSS Styling with GitHub image as background ---
+# --- CSS Styling with transparent background ---
 st.markdown(f"""
 <style>
 body {{
     padding-top: 80px;
-    background-color: #f9fafb;
-    background-image: url("{background_img_url}");
+    background-color: transparent;
+    background-image: url("{background_img_path}");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     font-family: 'Poppins', Arial, sans-serif;
-    color: #102a44;
+    color: white;
 }}
 
 .stApp {{
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.3);
     padding: 30px 40px;
     border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.1);
+    box-shadow: none;
     min-height: 80vh;
     z-index: 2;
     position: relative;
+    color: white;
 }}
 
-.background-watermark {{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 250px;
-    height: 250px;
-    opacity: 0.08;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 0;
+.title, .subtitle, .disclaimer {{
+    color: white !important;
 }}
 
-.title {{
-    text-align: center;
-    color: #0044cc;
-    font-size: 50px;
+.result-high {{
+    color: #00ff00;
     font-weight: bold;
-    z-index: 3;
-    position: relative;
 }}
-
-.subtitle {{
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 20px;
-    z-index: 3;
-    position: relative;
+.result-medium {{
+    color: #ffff00;
+    font-weight: bold;
 }}
-
-.disclaimer {{
-    background-color: #fff4e6;
-    border-left: 6px solid #ff9800;
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 30px;
-    font-size: 14px;
-    z-index: 3;
-    position: relative;
+.result-low {{
+    color: #ff4444;
+    font-weight: bold;
 }}
-
-.result-high {{ color: #00c853; font-weight: bold; }}
-.result-medium {{ color: #ffca28; font-weight: bold; }}
-.result-low {{ color: #d50000; font-weight: bold; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -180,7 +154,7 @@ st.session_state.volume = volume
 
 # --- Market Cap Calculation ---
 market_cap = close_price * volume
-st.markdown(f"""<div style="margin-top: 10px; font-weight: bold; font-size: 16px;">Auto-calculated Market Cap:<br><span style="color:#0044cc;">${market_cap:,.2f}</span></div>""", unsafe_allow_html=True)
+st.markdown(f"""<div style="margin-top: 10px; font-weight: bold; font-size: 16px;">Auto-calculated Market Cap:<br><span style="color:#00aaff;">${market_cap:,.2f}</span></div>""", unsafe_allow_html=True)
 
 # --- Price Chart ---
 price_df = pd.DataFrame({"Price": [open_price, high_price, low_price, close_price]}, index=["Open", "High", "Low", "Close"])
