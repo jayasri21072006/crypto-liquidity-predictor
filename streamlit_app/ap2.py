@@ -62,10 +62,12 @@ def load_model():
         st.error(f"Model loading failed: {e}")
         return None
 
-# --- App Setup ---
+# --- Streamlit App Setup ---
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
-set_background(os.path.join(os.path.dirname(__file__), "../Screenshot (96).png"))
+
+# Adjust the path for your background image here:
+set_background(os.path.join(os.path.dirname(__file__), "Screenshot (96).png"))
 
 # --- Title & Subtitle ---
 st.markdown("<h1 style='color:white;'>Crypto Liquidity Predictor</h1>", unsafe_allow_html=True)
@@ -79,7 +81,7 @@ coin_names = sorted([
 ])
 selected_coin = st.selectbox("Optional: Select a Coin", [""] + coin_names)
 
-# --- Input Defaults ---
+# --- Default Inputs ---
 for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -104,18 +106,18 @@ with col2:
     close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
     volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
-# --- Update Session State ---
+# --- Update session state ---
 st.session_state.open_price = open_price
 st.session_state.high_price = high_price
 st.session_state.low_price = low_price
 st.session_state.close_price = close_price
 st.session_state.volume = volume
 
-# --- Market Cap ---
+# --- Market Cap Calculation ---
 market_cap = close_price * volume
 st.markdown(f"<h4 style='color:#00c8ff;'>Market Cap: ${market_cap:,.2f}</h4>", unsafe_allow_html=True)
 
-# --- Line Chart ---
+# --- Price Line Chart ---
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
@@ -129,16 +131,17 @@ input_data = pd.DataFrame({
     'Close': [close_price],
     'Volume': [volume],
     'Market Cap': [market_cap],
+    # Placeholder for additional features:
     'SMA_5': [0],
     'EMA_12': [0],
     'RSI': [0],
     'MACD': [0]
 })
 
-# --- Load Model ---
+# --- Load the model ---
 model = load_model()
 
-# --- Classification ---
+# --- Classification Helper ---
 def classify_liquidity(score):
     if score < 0.4:
         return "<span style='color:red; font-weight:bold;'>Low</span>"
