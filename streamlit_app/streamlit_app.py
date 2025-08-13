@@ -47,6 +47,7 @@ navbar_html = """
 </nav>
 """
 
+# Fix: Use __file__ (double underscores) to get script directory
 def load_model():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +62,7 @@ st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", la
 # Display navbar
 components.html(navbar_html, height=80, scrolling=False)
 
-# CSS for page + tooltip styling
+# CSS with coin watermark background and light theme + tooltip styling
 st.markdown("""
 <style>
 body {
@@ -71,7 +72,7 @@ body {
     color: #102a44;
 }
 
-/* Main app container */
+/* Main app container with subtle white background */
 .stApp {
     background-color: rgba(255, 255, 255, 0.95);
     padding: 30px 40px;
@@ -191,46 +192,34 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Tooltip CSS */
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted #102a44;
-  cursor: help;
-  color: #102a44;
-  font-weight: 600;
-  font-size: 16px;
+/* Tooltip style for question mark */
+.label-tooltip {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
 }
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 180px;
-  background-color: #102a44;
-  color: #fff;
-  text-align: center;
-  border-radius: 8px;
-  padding: 8px 10px;
-  position: absolute;
-  z-index: 1000;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -90px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  font-size: 14px;
-  line-height: 1.2;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
+
+.label-tooltip span {
+    border-bottom: 1px dotted #102a44;
+    cursor: help;
+    color: #0f3443;
+    font-weight: bold;
+    font-size: 16px;
+    user-select:none;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Function to render label with tooltip
+# Helper function to create label with tooltip icon
 def label_with_tooltip(label, tooltip_text):
-    return f'<span class="tooltip">{label}<span class="tooltiptext">{tooltip_text}</span></span>'
+    return f"""
+    <div class="label-tooltip">
+        <label>{label}</label>
+        <span title="{tooltip_text}">❓</span>
+    </div>
+    """
 
 # Title and subtitle
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
@@ -283,19 +272,17 @@ if st.button("Load Demo Data"):
     load_demo_data()
 
 col1, col2 = st.columns(2)
-
 with col1:
-    st.markdown(label_with_tooltip("Open Price", "The price of the cryptocurrency at market open."), unsafe_allow_html=True)
-    open_price = st.number_input("", value=st.session_state.open_price, format="%.4f")
+    st.markdown(label_with_tooltip("Open Price", "The price at the start of the trading period."), unsafe_allow_html=True)
+    open_price = st.number_input("", value=st.session_state.open_price, format="%.4f", key="open_price", label_visibility="collapsed")
 
     st.markdown(label_with_tooltip("High Price", "The highest price during the trading period."), unsafe_allow_html=True)
-    high_price = st.number_input("", value=st.session_state.high_price, format="%.4f")
+    high_price = st.number_input("", value=st.session_state.high_price, format="%.4f", key="high_price", label_visibility="collapsed")
 
     st.markdown(label_with_tooltip("Low Price", "The lowest price during the trading period."), unsafe_allow_html=True)
-    low_price = st.number_input("", value=st.session_state.low_price, format="%.4f")
+    low_price = st.number_input("", value=st.session_state.low_price, format="%.4f", key="low_price", label_visibility="collapsed")
 
-    # Auto market cap display (just a display, not editable)
-    market_cap = st.session_state.close_price * st.session_state.volume
+    market_cap = close_price * volume if 'close_price' in st.session_state and 'volume' in st.session_state else 0
     st.markdown(f"""
     <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">
         Auto-calculated Market Cap:<br>
@@ -304,27 +291,26 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown(label_with_tooltip("Close Price", "The price of the cryptocurrency at market close."), unsafe_allow_html=True)
-    close_price = st.number_input("", value=st.session_state.close_price, format="%.4f")
+    st.markdown(label_with_tooltip("Close Price", "The price at the end of the trading period."), unsafe_allow_html=True)
+    close_price = st.number_input("", value=st.session_state.close_price, format="%.4f", key="close_price", label_visibility="collapsed")
 
-    st.markdown(label_with_tooltip("Volume", "Total volume of the cryptocurrency traded."), unsafe_allow_html=True)
-    volume = st.number_input("", value=st.session_state.volume, format="%.4f")
+    st.markdown(label_with_tooltip("Volume", "The total trading volume."), unsafe_allow_html=True)
+    volume = st.number_input("", value=st.session_state.volume, format="%.4f", key="volume", label_visibility="collapsed")
 
-# Update session state with inputs
+# Update session state with inputs (important for market cap calculation consistency)
 st.session_state.open_price = open_price
 st.session_state.high_price = high_price
 st.session_state.low_price = low_price
 st.session_state.close_price = close_price
 st.session_state.volume = volume
 
-# Price overview chart
 price_df = pd.DataFrame({
     "Price": [open_price, high_price, low_price, close_price]
 }, index=["Open", "High", "Low", "Close"])
+
 st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# Prepare input for model
 input_data = pd.DataFrame({
     'Open': [open_price],
     'High': [high_price],
@@ -359,33 +345,34 @@ def predict_price_trend(open_p, close_p):
 st.markdown("""
 <div class="disclaimer" style="font-size: 14px;">
     <strong>Disclaimer:</strong><br>
-    This tool uses an AI/ML model to make predictions based on input data.<br>
-    Predictions are not guaranteed for any particular cryptocurrency or token.<br>
-    No guarantees are made about accuracy or reliability. Use at your own risk.
+    This tool uses an AI/ML model for educational purposes only. Predictions are not guaranteed. Always do your own research before making investments.
 </div>
 """, unsafe_allow_html=True)
 
-agree = st.checkbox("I acknowledge and accept the disclaimer above.")
+if model:
+    if st.button("Predict Liquidity"):
+        with st.spinner("Analyzing..."):
+            try:
+                prediction_proba = model.predict_proba(input_data)[0][1]  # Probability of class 1
+                liquidity_level_html = classify_liquidity(prediction_proba)
+                price_trend = predict_price_trend(open_price, close_price)
+                st.markdown(f"""
+                <h3>Liquidity Level: {liquidity_level_html}</h3>
+                <h4>{price_trend}</h4>
+                """, unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"Prediction failed: {e}")
+else:
+    st.warning("Model is not loaded. Please check the model file.")
 
-if st.button("Predict Liquidity"):
-    if not model:
-        st.error("Model not loaded. Prediction unavailable.")
-    elif agree:
-        try:
-            score = model.predict(input_data)[0]
-            liquidity_level = classify_liquidity(score)
-            trend = predict_price_trend(open_price, close_price)
-
-            st.markdown(f"""
-            <div class='section' style='text-align:center'>
-                <h2>Prediction Result</h2>
-                <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
-                <p><strong>Liquidity Score:</strong> {score:.2f}</p>
-                <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
-                <p><strong>Price Trend:</strong> {trend}</p>
-            </div>
-            """, unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
-    else:
-        st.warning("Please accept the disclaimer to proceed.")
+# Footer with smaller font and links
+st.markdown("""
+<footer style="text-align:center; margin-top: 50px; font-size:14px; color:#555;">
+    <p>© 2025 CryptoPredictions. All rights reserved.</p>
+    <p>
+        <a href="https://cryptonews.com" target="_blank" rel="noopener noreferrer">Market Updates</a> | 
+        <a href="https://cryptopredictions.com/?results=200" target="_blank" rel="noopener noreferrer">Coin List</a> | 
+        <a href="https://cryptopredictions.com/blog/" target="_blank" rel="noopener noreferrer">Insights Blog</a>
+    </p>
+</footer>
+""", unsafe_allow_html=True)
