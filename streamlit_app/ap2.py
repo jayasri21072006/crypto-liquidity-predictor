@@ -49,6 +49,10 @@ def set_background_url(image_url):
     """
     st.markdown(css, unsafe_allow_html=True)
 
+# Use the raw GitHub URL
+set_background_url("https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg")
+
+
 # --- Load Model ---
 def load_model():
     try:
