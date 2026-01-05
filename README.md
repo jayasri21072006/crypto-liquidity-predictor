@@ -63,19 +63,21 @@ streamlit run streamlit_app.py
 
 ## 📂 Project Structure
 
-\
 crypto-liquidity-predictor/
-└── streamlit_app/
-    ├── crypto_price_prediction (1).ipynb      # Model training and EDA
-    ├── crypto_liquidity_model.pkl             # Trained model
-    ├── streamlit_app.py                       # Streamlit UI code
-    ├── requirements.txt                       # Python dependencies
-    ├── final_report.md                        # Summary & insights
-    ├── eda report.md                          # Data exploration
-    ├── hld_document.md                        # High-Level Design
-    ├── low_level_design.md                    # Component breakdown
-    ├── pipeline_architecture.md               # Data flow and pipeline
-
+├── .devcontainer/                         # Development container configs (for VS Code Remote)
+├── streamlit_app/
+│   ├── 53540861975_5538e666cf_c.jpg      # Image file (probably for UI or report)
+│   ├── crypto.html                        # Possibly exported HTML visualization
+│   ├── crypto_liquidity_model.pkl         # Trained machine learning model
+│   ├── crypto_price_prediction (1).ipynb # Model training and EDA notebook
+│   ├── eda report.md                      # Data exploration report
+│   ├── final_report.md                    # Summary & insights
+│   ├── hld_document.md                    # High-Level Design document
+│   ├── low_level_design.md                # Component breakdown
+│   ├── pipeline_architecture.md           # Data flow and pipeline
+│   ├── requirements.txt                   # Python dependencies
+│   └── streamlit_app.py                   # Streamlit UI code
+└── README.md                              # Project overview and instructions
 
 ## 📑 Reports Included
 
