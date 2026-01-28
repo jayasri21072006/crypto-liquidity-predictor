@@ -3,203 +3,234 @@ import streamlit.components.v1 as components
 import joblib
 import pandas as pd
 import os
-import base64
 
-# --------------------------------------------------
-# Page Config
-# --------------------------------------------------
-st.set_page_config(
-    page_title="Crypto Liquidity Predictor",
-    page_icon="💧",
-    layout="centered"
-)
-
-# --------------------------------------------------
-# Background Image (LOCAL FILE)
-# --------------------------------------------------
-def set_bg_image(image_path):
-    with open(image_path, "rb") as img_file:
-        encoded = base64.b64encode(img_file.read()).decode()
-
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-
-        section[data-testid="stAppViewContainer"] {{
-            background-color: rgba(255, 255, 255, 0.88);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# image is inside streamlit_app/
-set_bg_image("53540861975_5538e666cf_c.jpg")
-
-# --------------------------------------------------
-# Navbar
-# --------------------------------------------------
+# --- Navbar HTML ---
 navbar_html = """
-<nav style="background-color:#102a44; color:white; display:flex; align-items:center;
-padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px;
-box-shadow:0 4px 8px rgba(0,0,0,0.15);
-font-family:Poppins, Arial; width:100vw; position:fixed; top:0; left:0; z-index:9999;">
-
-  <div style="font-weight:700; font-size:26px;
-  background:linear-gradient(90deg,#34e89e,#0f3443);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;">
-  CryptoPredictions
+<nav style="background-color:#102a44; color:white; display:flex; align-items:center; padding:12px 30px; justify-content:space-between; border-radius:0 0 10px 10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); font-family: 'Poppins', Arial, sans-serif; width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; box-sizing: border-box;">
+  <div style="display:flex; align-items:center;">
+    <div style="font-weight:700; font-size:26px; background: linear-gradient(90deg, #34e89e, #0f3443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select:none; cursor:default;">CryptoPredictions</div>
   </div>
-
-  <ul style="list-style:none; display:flex; gap:25px; margin:0;">
-    <li><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none;">Market Updates</a></li>
-    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none;">Coin List</a></li>
-    <li><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none;">Insights</a></li>
+  <ul class="nav-links" style="list-style:none; display:flex; gap: 25px; margin:0; padding:0;">
+    <li><a href="https://cryptonews.com" target="_blank" style="color:white; text-decoration:none; font-weight:600;">Market Updates</a></li>
+    <li><a href="https://cryptopredictions.com/?results=200" target="_blank" style="color:white; text-decoration:none; font-weight:600;">Coin List</a></li>
+    <li><a href="https://cryptopredictions.com/blog/" target="_blank" style="color:white; text-decoration:none; font-weight:600;">Insights Blog</a></li>
   </ul>
-
-  <div>
-    <a href="https://twitter.com" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="22">
-    </a>
-    <a href="https://facebook.com" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="22" style="margin-left:10px;">
-    </a>
+  <div style="display:flex; align-items:center; gap:20px;">
+    <div>
+      <a href="https://twitter.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" style="width:24px; height:24px;"></a>
+      <a href="https://facebook.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" style="width:24px; height:24px; margin-left: 10px;"></a>
+    </div>
+    <select style="background:transparent; border:none; color:white; font-weight:600; font-size:15px;">
+      <option value="en" selected>English 🇬🇧</option>
+      <option value="es">Español 🇪🇸</option>
+      <option value="fr">Français 🇫🇷</option>
+    </select>
   </div>
 </nav>
 """
-components.html(navbar_html, height=80)
 
-# --------------------------------------------------
-# CSS
-# --------------------------------------------------
+# -- Correct model loader --
+def load_model():
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(script_dir, 'crypto_liquidity_model.pkl')
+        return joblib.load(model_path)
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        return None
+
+# --- Streamlit Page Setup ---
+st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
+components.html(navbar_html, height=80, scrolling=False)
+
+# --- CSS Styling ---
 st.markdown("""
 <style>
-body { padding-top:80px; font-family:Poppins, Arial; }
-.title { text-align:center; font-size:48px; font-weight:800; color:#0044cc; }
-.subtitle { text-align:center; font-size:20px; margin-bottom:25px; }
-.result-high { color:#00c853; font-weight:bold; }
-.result-medium { color:#ffb300; font-weight:bold; }
-.result-low { color:#d50000; font-weight:bold; }
-.disclaimer {
-  background:#fff3cd;
-  padding:15px;
-  border-left:6px solid #ff9800;
-  border-radius:10px;
-  margin-top:25px;
+body {
+    padding-top: 80px;
+    background-color: #f9fafb;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: #102a44;
 }
+.stApp {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.1);
+    min-height: 80vh;
+}
+.background-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    opacity: 0.1;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.title {
+    text-align: center;
+    color: #0044cc;
+    font-size: 50px;
+    font-weight: bold;
+}
+.subtitle {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.disclaimer {
+    background-color: #fff4e6;
+    border-left: 6px solid #ff9800;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 30px;
+    font-size: 14px;
+}
+.result-high { color: #00c853; font-weight: bold; }
+.result-medium { color: #ffca28; font-weight: bold; }
+.result-low { color: #d50000; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-# --------------------------------------------------
-# Title
-# --------------------------------------------------
+# --- Title and Subtitle ---
 st.markdown("<div class='title'>Crypto Liquidity Predictor</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Estimate crypto <b>Liquidity Level</b> using ML</div>", unsafe_allow_html=True)
-st.divider()
+st.markdown("<div class='subtitle'>Enter crypto data to estimate <strong>Liquidity Level</strong>.</div>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
-# --------------------------------------------------
-# Model Loader
-# --------------------------------------------------
-def load_model():
-    try:
-        return joblib.load("crypto_liquidity_model.pkl")
-    except Exception as e:
-        st.error(f"Model load failed: {e}")
-        return None
+# --- Coin Selection ---
+coin_names = sorted([
+    'Bitcoin', 'Ethereum', 'Tether', 'BNB', 'XRP', 'Solana', 'Cardano',
+    'Dogecoin', 'Shiba Inu', 'Polygon', 'Litecoin', 'Polkadot', 'Avalanche',
+    'Uniswap', 'Chainlink', 'Stellar', 'VeChain', 'TRON', 'Filecoin', 'Near',
+])
+coin_logos = {
+    "Bitcoin": "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024",
+    "Ethereum": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024",
+    "Tether": "https://cryptologos.cc/logos/tether-usdt-logo.png?v=024",
+    "BNB": "https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=024",
+    "XRP": "https://cryptologos.cc/logos/xrp-xrp-logo.png?v=024",
+    "Solana": "https://cryptologos.cc/logos/solana-sol-logo.png?v=024",
+    "Cardano": "https://cryptologos.cc/logos/cardano-ada-logo.png?v=024"
+}
 
-model = load_model()
+selected_coin = st.selectbox("Optional: Select a Coin Name", [""] + coin_names, index=0)
+if selected_coin and selected_coin in coin_logos:
+    st.markdown(
+        f"<img class='background-watermark' src='{coin_logos[selected_coin]}' alt='Coin logo watermark'>",
+        unsafe_allow_html=True
+    )
 
-# --------------------------------------------------
-# Inputs
-# --------------------------------------------------
+# --- Session State Init ---
+for key in ['open_price', 'high_price', 'low_price', 'close_price', 'volume']:
+    if key not in st.session_state:
+        st.session_state[key] = 0.0
+
+def load_demo_data():
+    st.session_state.open_price = 56787.5
+    st.session_state.high_price = 64776.4
+    st.session_state.low_price = 55000.0
+    st.session_state.close_price = 63000.0
+    st.session_state.volume = 123456.789
+
+if st.button("Load Demo Data"):
+    load_demo_data()
+
+# --- Inputs ---
 col1, col2 = st.columns(2)
-
 with col1:
-    open_price = st.number_input("Open Price", value=56787.5)
-    high_price = st.number_input("High Price", value=64776.4)
-    low_price = st.number_input("Low Price", value=55000.0)
+    open_price = st.number_input('Open Price', value=st.session_state.open_price, format="%.4f")
+    high_price = st.number_input('High Price', value=st.session_state.high_price, format="%.4f")
+    low_price = st.number_input('Low Price', value=st.session_state.low_price, format="%.4f")
 
 with col2:
-    close_price = st.number_input("Close Price", value=63000.0)
-    volume = st.number_input("Volume", value=123456.789)
+    close_price = st.number_input('Close Price', value=st.session_state.close_price, format="%.4f")
+    volume = st.number_input('Volume', value=st.session_state.volume, format="%.4f")
 
-# --------------------------------------------------
-# Derived Features
-# --------------------------------------------------
+# --- Update session ---
+st.session_state.open_price = open_price
+st.session_state.high_price = high_price
+st.session_state.low_price = low_price
+st.session_state.close_price = close_price
+st.session_state.volume = volume
+
+# --- Market Cap ---
 market_cap = close_price * volume
-st.markdown(f"**Market Cap:** ${market_cap:,.2f}")
+st.markdown(f"""<div style="margin-top: 10px; font-weight: bold; font-size: 16px;">Auto-calculated Market Cap:<br><span style="color:#0044cc;">${market_cap:,.2f}</span></div>""", unsafe_allow_html=True)
 
-price_df = pd.DataFrame(
-    {"Price": [open_price, high_price, low_price, close_price]},
-    index=["Open", "High", "Low", "Close"]
-)
+# --- Chart ---
+price_df = pd.DataFrame({"Price": [open_price, high_price, low_price, close_price]}, index=["Open", "High", "Low", "Close"])
+st.markdown("### Price Overview")
 st.line_chart(price_df)
 
-# --------------------------------------------------
-# Prediction Input
-# --------------------------------------------------
+# --- Model Prediction Input ---
 input_data = pd.DataFrame({
-    "Open": [open_price],
-    "High": [high_price],
-    "Low": [low_price],
-    "Close": [close_price],
-    "Volume": [volume],
-    "Market Cap": [market_cap],
-    "SMA_5": [0],
-    "EMA_12": [0],
-    "RSI": [0],
-    "MACD": [0],
+    'Open': [open_price],
+    'High': [high_price],
+    'Low': [low_price],
+    'Close': [close_price],
+    'Volume': [volume],
+    'Market Cap': [market_cap],
+    'SMA_5': [0],
+    'EMA_12': [0],
+    'RSI': [0],
+    'MACD': [0]
 })
 
-def classify(score):
+# --- Load Model ---
+model = load_model()
+
+# --- Classifier ---
+def classify_liquidity(score):
     if score < 0.4:
         return "<span class='result-low'>Low</span>"
     elif score < 0.7:
         return "<span class='result-medium'>Medium</span>"
-    return "<span class='result-high'>High</span>"
+    else:
+        return "<span class='result-high'>High</span>"
 
-def trend(o, c):
-    if c > o: return "Price may go UP 📈"
-    if c < o: return "Price may go DOWN 📉"
-    return "Sideways movement"
+def predict_price_trend(open_p, close_p):
+    if close_p > open_p:
+        return "Price may go Up"
+    elif close_p < open_p:
+        return "Price may go Down"
+    else:
+        return "No Clear Price Movement"
 
-# --------------------------------------------------
-# Disclaimer
-# --------------------------------------------------
+# --- Disclaimer ---
 st.markdown("""
 <div class="disclaimer">
-<b>Disclaimer:</b><br>
-This prediction is ML-based and not financial advice.
-Crypto markets are volatile. Use responsibly.
+    <strong>Disclaimer:</strong><br>
+    This tool uses an AI/ML model to make predictions based on input data.<br>
+    Predictions are not guaranteed for any particular cryptocurrency or token.<br>
+    No guarantees are made about accuracy or reliability. Use at your own risk.
 </div>
 """, unsafe_allow_html=True)
 
-agree = st.checkbox("I understand and accept the disclaimer")
+agree = st.checkbox("I acknowledge and accept the disclaimer above.")
 
-# --------------------------------------------------
-# Predict
-# --------------------------------------------------
-if st.button("🔮 Predict Liquidity"):
-    if not agree:
-        st.warning("Please accept the disclaimer.")
-    elif model is None:
-        st.error("Model not available.")
+
+# --- Predict Button ---
+if st.button("Predict Liquidity"):
+    if not model:
+        st.error("Model not loaded. Prediction unavailable.")
+    elif agree:
+        try:
+            score = model.predict(input_data)[0]
+            liquidity_level = classify_liquidity(score)
+            trend = predict_price_trend(open_price, close_price)
+
+            st.markdown(f"""
+            <div class='section' style='text-align:center'>
+                <h2>Prediction Result</h2>
+                <p><strong>Selected Coin:</strong> {selected_coin if selected_coin else "N/A"}</p>
+                <p><strong>Liquidity Score:</strong> {score:.2f}</p>
+                <p><strong>Liquidity Level:</strong> {liquidity_level}</p>
+                <p><strong>Price Trend:</strong> {trend}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Prediction failed: {e}")
     else:
-        score = model.predict(input_data)[0]
-        st.markdown(f"""
-        <h3 style="text-align:center;">Prediction Result</h3>
-        <p><b>Liquidity Score:</b> {score:.2f}</p>
-        <p><b>Liquidity Level:</b> {classify(score)}</p>
-        <p><b>Trend:</b> {trend(open_price, close_price)}</p>
-        """, unsafe_allow_html=True)
+        st.warning("Please accept the disclaimer to proceed.")  
