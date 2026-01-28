@@ -43,22 +43,32 @@ def load_model():
 st.set_page_config(page_title="Crypto Liquidity Predictor", page_icon="💧", layout="centered")
 components.html(navbar_html, height=80, scrolling=False)
 
-# --- CSS Styling ---
 st.markdown("""
 <style>
 body {
     padding-top: 80px;
-    background-color: #f9fafb;
     font-family: 'Poppins', Arial, sans-serif;
     color: #102a44;
 }
+
+/* FULL BACKGROUND IMAGE */
 .stApp {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-image: url("https://raw.githubusercontent.com/jayasri21072006/crypto-liquidity-predictor/main/53540861975_5538e666cf_c.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Glass effect for content */
+section[data-testid="stAppViewContainer"] {
+    background-color: rgba(255, 255, 255, 0.88);
     padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(16, 42, 68, 0.15);
     min-height: 80vh;
 }
+
 .background-watermark {
     position: absolute;
     top: 50%;
@@ -69,17 +79,20 @@ body {
     transform: translate(-50%, -50%);
     pointer-events: none;
 }
+
 .title {
     text-align: center;
     color: #0044cc;
     font-size: 50px;
     font-weight: bold;
 }
+
 .subtitle {
     text-align: center;
     font-size: 20px;
     margin-bottom: 20px;
 }
+
 .disclaimer {
     background-color: #fff4e6;
     border-left: 6px solid #ff9800;
@@ -88,6 +101,13 @@ body {
     margin-top: 30px;
     font-size: 14px;
 }
+
+.result-high { color: #00c853; font-weight: bold; }
+.result-medium { color: #ffca28; font-weight: bold; }
+.result-low { color: #d50000; font-weight: bold; }
+</style>
+""", unsafe_allow_html=True)
+
 .result-high { color: #00c853; font-weight: bold; }
 .result-medium { color: #ffca28; font-weight: bold; }
 .result-low { color: #d50000; font-weight: bold; }
